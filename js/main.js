@@ -48,4 +48,12 @@ Promise.all([
 
     let rollupCountWinnerPerCountryData = rollupData(nobelPrizeData)
     let commonData = joinData(geoData, rollupCountWinnerPerCountryData)
+
+    const prizeWorldMap = new NobelPrizeWorldMap({
+        parentElement:  '#vis-container-map',
+        containerWidth: 1000,
+        containerHeight: 800
+    }, commonData)
+
+    prizeWorldMap.updateVis()
 })
