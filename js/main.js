@@ -1,9 +1,21 @@
 const parseDate = d3.timeParse('%Y-%m-%d')
 
+function changeField(csvData) {
+    for (let i = 0; i < csvData.length; i++) {
+        if (csvData[i].birth_countryNow === 'USA') {
+            csvData[i].birth_countryNow = 'United States of America'
+        }
+    }
+
+    return csvData
+}
+
+// Roll up data here.
 function rollupData(csvData) {
     return d3.rollups(csvData, v => v.length, d => d.birth_countryNow)
 }
 
+// Join data here.
 function joinData(topoMap, csvData) {
     const mapItems = topoMap.objects.countries.geometries
 
@@ -16,12 +28,9 @@ function joinData(topoMap, csvData) {
             let mapItem = mapItems[j]
             let mapKey = mapItem.properties.name
 
-            // console.log('Map key: ', mapKey)
-
+            // Don't put an else statement and set winnerCount = 0 because it sets all values to 0.
             if (csvKey === mapKey) {
                 mapItem.properties.winnerCount = csvValue
-            } else {
-                mapItem.properties.winnerCount = 0
             }
         }
     }
@@ -46,14 +55,17 @@ Promise.all([
         d.death_date = parseDate(d.death_date)
     })
 
-    let rollupCountWinnerPerCountryData = rollupData(nobelPrizeData)
+    let abbreviationToFullData = changeField(nobelPrizeData)
+    let rollupCountWinnerPerCountryData = rollupData(abbreviationToFullData)
     let commonData = joinData(geoData, rollupCountWinnerPerCountryData)
+
+    console.log('Common data: ', commonData)
 
     const prizeWorldMap = new NobelPrizeWorldMap({
         parentElement:  '#vis-container-map',
         containerWidth: 1000,
         containerHeight: 800
-    }, commonData)
+    }, commonData, nobelPrizeData)
 
     prizeWorldMap.updateVis()
 })

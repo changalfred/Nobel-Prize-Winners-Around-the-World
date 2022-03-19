@@ -1,5 +1,5 @@
 class NobelPrizeWorldMap {
-    constructor(_config, _data) {
+    constructor(_config, _commonData, _nobelPrizeData) {
         this.config = {
             parentElement: _config.parentElement,
             containerWidth: _config.containerWidth,
@@ -12,7 +12,8 @@ class NobelPrizeWorldMap {
             legendHeight: 10
         }
 
-        this.data = _data
+        this.commonData = _commonData
+        this.nobelPrizeData = _nobelPrizeData
         this.initVis()
     }
 
@@ -32,27 +33,31 @@ class NobelPrizeWorldMap {
             .attr('transform', `translate(${vis.config.margin.left}, ${vis.config.margin.top})`)
 
         // Initialize projection and path generator.
-        vis.projection = d3.geoMercator()
+        vis.projection = d3.geoEquirectangular()    // Easiest to point at small countries with cursor.
+            .scale([vis.width / (2 * Math.PI)])
+            .translate([vis.width / 2, vis.height / 2])
         vis.geoPath = d3.geoPath().projection(vis.projection)
 
         vis.colorScale = d3.scaleLinear()
-            .range(['white', 'darkgreen'])
+            .range(['lightgreen', 'darkgreen'])
 
         vis.updateVis()
     }
 
     updateVis() {
         let vis = this
-        let rollupByBirthCountryData = d3.rollups(vis.data, v => v.length, d => d.birth_countryNow)
 
-        // console.log('vis data: ', vis.data)
-        // console.log('rollup by birth country: ', rollupByBirthCountryData)
+        // const arrWinnerCounts = []
+        // const maxWinnersByCountry = d3.rollups(vis.nobelPrizeData, v => v.length, d => d.birth_countryNow)
+        //
+        // for (let i = 0; i < maxWinnersByCountry.length; i++) {
+        //     arrWinnerCounts.push(maxWinnersByCountry[i][1])
+        // }
 
-        const winnersDensityExtent = d3.extent(vis.data,
-            d3.rollups(vis.data, v => v.length, d => d.birth_countryNow))
-        // console.log('Winners density extent: ', winnersDensityExtent)
+        // Min winners excludes 0 because those countries will be coloured white, which is not part of colour scale.
+        let winnersCountByCountryExtent = [1, 300]
 
-        vis.colorScale.domain(winnersDensityExtent)
+        vis.colorScale.domain(winnersCountByCountryExtent)
 
         vis.renderVis()
         vis.renderLegend()
@@ -62,10 +67,11 @@ class NobelPrizeWorldMap {
         let vis = this
 
         // Convert TopoJson -> GeoJson.
-        const countries = topojson.feature(vis.data, vis.data.objects.collection)
+        const countries = topojson.feature(vis.commonData, vis.commonData.objects.countries)
+        // console.log('Countries: ', countries)
 
         // Need count of winners per country when binding to determine colour saturation.
-        const countWinnerByCountryData = d3.rollups(vis.data, v => v.length, d => d.birth_countryNow)
+        const countWinnerByCountryData = d3.rollups(vis.nobelPrizeData, v => v.length, d => d.birth_countryNow)
         // console.log('Count winners by country data: ', countWinnerByCountryData)
 
         // Scale projection so geometry fits in svg area.
@@ -76,8 +82,15 @@ class NobelPrizeWorldMap {
             .join('path')
             .attr('class', 'country')
             .attr('d', vis.geoPath)
-            .attr('fill', () => {
-                return vis.colorScale(countWinnerByCountryData)
+            .attr('stroke', 'black')
+            .attr('fill', d => {
+                if (d.properties.winnerCount) {
+                    console.log('')
+                    console.log('Country: ', d.properties.name, '; Winners: ', d.properties.winnerCount)
+                    return vis.colorScale(d.properties.winnerCount)
+                } else {
+                    return 'white'
+                }
             })
     }
 
