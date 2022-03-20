@@ -38,8 +38,9 @@ class NobelPrizeWorldMap {
             .translate([vis.width / 2, vis.height / 2])
         vis.geoPath = d3.geoPath().projection(vis.projection)
 
-        vis.colorScale = d3.scaleLinear()
-            .range(['lightgreen', 'darkgreen'])
+        vis.colorScale = d3.scaleThreshold()
+            // .range(['lightgreen', 'darkgreen'])
+            .range(d3.schemeYlGn[9])
 
         vis.updateVis()
     }
@@ -55,8 +56,7 @@ class NobelPrizeWorldMap {
         // }
 
         // Min winners excludes 0 because those countries will be coloured white, which is not part of colour scale.
-        let winnersCountByCountryExtent = [1, 300]
-
+        let winnersCountByCountryExtent = [0, 20, 40, 60, 80, 100, 120, 140, 160]
         vis.colorScale.domain(winnersCountByCountryExtent)
 
         vis.renderVis()
@@ -85,8 +85,7 @@ class NobelPrizeWorldMap {
             .attr('stroke', 'black')
             .attr('fill', d => {
                 if (d.properties.winnerCount) {
-                    console.log('')
-                    console.log('Country: ', d.properties.name, '; Winners: ', d.properties.winnerCount)
+                    console.log('Colour from scale: ', vis.colorScale(d.properties.winnerCount))
                     return vis.colorScale(d.properties.winnerCount)
                 } else {
                     return 'white'
