@@ -6,10 +6,10 @@ class NobelPrizeWorldMap {
             containerHeight: _config.containerHeight,
             margin: {top: 35, right: 10, bottom: 10, left: 35},
             tooltipPadding: 10,
-            legendTop: 10,
-            legendRight: 10,
-            legendWidth: 10,
-            legendHeight: 10
+            legendMarginTop: 450,
+            legendMarginLeft: 35,
+            legendWidth: 150,
+            legendHeight: 20
         }
 
         this.commonData = _commonData
@@ -39,8 +39,27 @@ class NobelPrizeWorldMap {
         vis.geoPath = d3.geoPath().projection(vis.projection)
 
         vis.colorScale = d3.scaleThreshold()
-            // .range(['lightgreen', 'darkgreen'])
             .range(d3.schemeYlGn[9])
+
+        // Set up legend.
+        vis.linearGradient = vis.svg.append('defs')
+            .append('linearGradient')
+            .attr('id', 'legend-gradient')
+
+        vis.legend = vis.map.append('g')
+            .attr('class', 'legend')
+            .attr('transform', `translate(${vis.config.legendMarginLeft}, ${vis.config.legendMarginTop})`)
+
+        vis.legendRect = vis.legend.append('rect')
+            .attr('width', vis.config.legendWidth)
+            .attr('height', vis.config.legendHeight)
+
+        vis.legendTitle = vis.legend.append('text')
+            .attr('class', 'legend-title')
+            .attr('dy', '.35em')
+            .attr('y', -10)
+            .attr('text-anchor', 'center')
+            .text('Winners Per Country')
 
         vis.updateVis()
     }
@@ -48,16 +67,14 @@ class NobelPrizeWorldMap {
     updateVis() {
         let vis = this
 
-        // const arrWinnerCounts = []
-        // const maxWinnersByCountry = d3.rollups(vis.nobelPrizeData, v => v.length, d => d.birth_countryNow)
-        //
-        // for (let i = 0; i < maxWinnersByCountry.length; i++) {
-        //     arrWinnerCounts.push(maxWinnersByCountry[i][1])
-        // }
-
-        // Min winners excludes 0 because those countries will be coloured white, which is not part of colour scale.
         let winnersCountByCountryExtent = [0, 20, 40, 60, 80, 100, 120, 140, 160]
         vis.colorScale.domain(winnersCountByCountryExtent)
+
+        vis.legendStops = [{color: vis.colorScale.range[0], value: winnersCountByCountryExtent[0], offset: 0},
+            {color: vis.colorScale.range[9], value: winnersCountByCountryExtent[winnersCountByCountryExtent.length - 1],
+                offset: 100}]
+        // console.log('Colour 1: ', vis.legendStops[0].color, " Value 1: ", vis.legendStops[0].value)
+        // console.log('Colour 2: ', vis.legendStops[1].color, " Value 2: ", vis.legendStops[1].value)
 
         vis.renderVis()
         vis.renderLegend()
@@ -68,7 +85,6 @@ class NobelPrizeWorldMap {
 
         // Convert TopoJson -> GeoJson.
         const countries = topojson.feature(vis.commonData, vis.commonData.objects.countries)
-        // console.log('Countries: ', countries)
 
         // Need count of winners per country when binding to determine colour saturation.
         const countWinnerByCountryData = d3.rollups(vis.nobelPrizeData, v => v.length, d => d.birth_countryNow)
@@ -85,15 +101,57 @@ class NobelPrizeWorldMap {
             .attr('stroke', 'black')
             .attr('fill', d => {
                 if (d.properties.winnerCount) {
-                    console.log('Colour from scale: ', vis.colorScale(d.properties.winnerCount))
                     return vis.colorScale(d.properties.winnerCount)
                 } else {
                     return 'white'
                 }
             })
+            .on('mouseover', mouseOverCountry())
+            .on('mouseleave', mouseLeaveCountry())
+            .on('click', mouseClickCountry())
+            .on('dblclick', mouseDoubleClickCountry())
+
+        // Show tooltip.
+        function mouseOverCountry() {
+
+        }
+
+        // Hide tooltip.
+        function mouseLeaveCountry() {
+
+        }
+
+        // Click on country once.
+        function mouseClickCountry() {
+
+        }
+
+        // Click on country twice.
+        function mouseDoubleClickCountry() {
+
+        }
     }
 
     renderLegend() {
         let vis = this
+
+        vis.legend.selectAll('.legend-label')
+            .data(vis.legendStops)
+            .join('text')
+            .attr('class', 'legend-label')
+            .attr('dy', '.35em')
+            .attr('y', 20)
+            .attr('x', (d, i) => {
+                return i === 0 ? 0 : vis.config.legendWidth
+            })
+            .text(d => Math.round(d.value * 10) / 10)
+
+        vis.linearGradient.selectAll('.stop')
+            .data(vis.legendStops)
+            .join('stop')
+            .attr('offset', d => d.offset)
+            .attr('stop-color', d => d.color)
+
+        vis.legendRect.attr('fill', 'url(#legend-gradient)')
     }
 }
