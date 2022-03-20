@@ -5,6 +5,7 @@ class Treemap {
             parentElement: _config.parentElement,
             containerWidth: _config.containerWidth || 800,
             containerHeight: _config.containerHeight || 800,
+            tooltipPadding: _config.tooltipPadding || 15,
             margin: _config.margin || { top: 10, right: 10, bottom: 10, left: 10 },
         }
         this.dispatcher = _dispatcher;
@@ -67,9 +68,50 @@ class Treemap {
     renderVis() {
         // Bind data to visual elements, update axes
         let vis = this;
+        const fontSize = 15;
+
+        function wrapText(selection) {
+            selection.each(function () {
+                const node = d3.select(this);
+                const rectWidth = +node.attr('data-width');
+                let word;
+                const words = node.text().split(' ').reverse();
+                let line = [];
+                const x = node.attr('x');
+                const y = node.attr('y');
+                let tspan = node.text('').append('tspan').attr('x', x).attr('y', y);
+                let lineNumber = 0;
+                while (words.length > 1) {
+                    word = words.pop();
+                    line.push(word);
+                    tspan.text(line.join(' '));
+                    const tspanLength = tspan.node().getComputedTextLength();
+                    if (tspanLength > rectWidth && line.length !== 1) {
+                        line.pop();
+                        tspan.text(line.join(' '));
+                        line = [word];
+                        tspan = addTspan(word);
+                    }
+                }
+
+                addTspan(words.pop());
+
+                function addTspan(text) {
+                    lineNumber += 1;
+                    return (
+                        node
+                            .append('tspan')
+                            .attr('x', x)
+                            .attr('y', y)
+                            .attr('dy', `${lineNumber * fontSize}px`)
+                            .text(text)
+                    );
+                }
+            });
+        }
 
         // Add rectangles
-        const bars = vis.chart.selectAll('rect')
+        const rect = vis.chart.selectAll('rect')
             .data(vis.data.leaves())
             .join('rect')
             .attr('x', function (d) { return d.x0; })
@@ -82,10 +124,26 @@ class Treemap {
         const labels = vis.chart.selectAll('text')
             .data(vis.data.leaves())
             .join('text')
+            .attr('data-width', (d) => d.x1 - d.x0)
             .attr("x", function (d) { return d.x0 + 10 })    // +10 to adjust position (more right)
             .attr("y", function (d) { return d.y0 + 20 })    // +20 to adjust position (lower)
             .text(function (d) { return d.data.university })
-            .attr("font-size", "15px")
+            .attr('font-size', `${fontSize}px`)
             .attr("fill", "white")
+            .call(wrapText);
+
+        rect.on('mousemove', (event, d) => {
+            d3.select('#treemapTooltip')
+                .style('display', 'block')
+                .style('left', (event.pageX + vis.config.tooltipPadding) + 'px')
+                .style('top', (event.pageY + vis.config.tooltipPadding) + 'px')
+                .html(`
+                <div class="treemapTooltip-title">${d.data.university}</div>
+                <div><i>Number of Nobel Laureates: ${d.data.awardCount}</i></div>
+              `);
+        })
+            .on('mouseout', () => {
+                d3.select('#treemapTooltip').style('display', 'none');
+            });
     }
 }
