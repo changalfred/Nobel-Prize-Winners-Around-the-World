@@ -92,6 +92,26 @@ class NobelPrizeWorldMap {
 
         // Scale projection so geometry fits in svg area.
         vis.projection.fitSize([vis.width, vis.height], countries)
+        
+        // Show tooltip.
+        let mouseOverCountry = function(event, d) {
+
+        }
+
+        // Hide tooltip.
+        let mouseLeaveCountry = function(event, d) {
+
+        }
+
+        // Click on country once.
+        let mouseClickCountry = function(event, d) {
+
+        }
+
+        // Click on country twice.
+        let mouseDoubleClickCountry = function(event, d) {
+
+        }
 
         const countryPath = vis.map.selectAll('.country')
             .data(countries.features)
@@ -106,30 +126,10 @@ class NobelPrizeWorldMap {
                     return 'white'
                 }
             })
-            .on('mouseover', mouseOverCountry())
-            .on('mouseleave', mouseLeaveCountry())
-            .on('click', mouseClickCountry())
-            .on('dblclick', mouseDoubleClickCountry())
-
-        // Show tooltip.
-        function mouseOverCountry() {
-
-        }
-
-        // Hide tooltip.
-        function mouseLeaveCountry() {
-
-        }
-
-        // Click on country once.
-        function mouseClickCountry() {
-
-        }
-
-        // Click on country twice.
-        function mouseDoubleClickCountry() {
-
-        }
+            .on('mouseover', mouseOverCountry)
+            .on('mouseleave', mouseLeaveCountry)
+            .on('click', mouseClickCountry)
+            .on('dblclick', mouseDoubleClickCountry)
     }
 
     renderLegend() {
