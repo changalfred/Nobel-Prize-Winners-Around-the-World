@@ -92,24 +92,33 @@ class NobelPrizeWorldMap {
 
         // Scale projection so geometry fits in svg area.
         vis.projection.fitSize([vis.width, vis.height], countries)
-        
+
         // Show tooltip.
         let mouseOverCountry = function(event, d) {
-
+            console.log('Mouseover')
+            d3.selectAll('.country')
+                .style('opacity', 0.5)
+            d3.select(this)
+                .style('stroke-width', 1.5)
+                .style('opacity', 1)
         }
 
         // Hide tooltip.
         let mouseLeaveCountry = function(event, d) {
-
+            d3.selectAll('.country')
+                .style('opacity', 1)
+            d3.select(this)
+                .style('stroke-width', 0.5)
         }
 
         // Click on country once.
         let mouseClickCountry = function(event, d) {
-
+            // TODO: Interact with other views.
         }
 
         // Click on country twice.
         let mouseDoubleClickCountry = function(event, d) {
+            // TODO: Innovative view.
 
         }
 
@@ -119,6 +128,7 @@ class NobelPrizeWorldMap {
             .attr('class', 'country')
             .attr('d', vis.geoPath)
             .attr('stroke', 'black')
+            .attr('stroke-width', 0.5)
             .attr('fill', d => {
                 if (d.properties.winnerCount) {
                     return vis.colorScale(d.properties.winnerCount)
