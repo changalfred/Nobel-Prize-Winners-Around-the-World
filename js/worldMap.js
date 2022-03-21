@@ -1,5 +1,5 @@
 class NobelPrizeWorldMap {
-    constructor(_config, _commonData, _nobelPrizeData) {
+    constructor(_config, _commonData, _winningestCountryData, _minMaxWinnersPerCountryData,_nobelPrizeData) {
         this.config = {
             parentElement: _config.parentElement,
             containerWidth: _config.containerWidth,
@@ -13,6 +13,8 @@ class NobelPrizeWorldMap {
         }
 
         this.commonData = _commonData
+        this.winningestCountryData = _winningestCountryData
+        this.minMaxWinnersPerCountryData = _minMaxWinnersPerCountryData
         this.nobelPrizeData = _nobelPrizeData
         this.initVis()
     }
@@ -93,17 +95,35 @@ class NobelPrizeWorldMap {
         // Scale projection so geometry fits in svg area.
         vis.projection.fitSize([vis.width, vis.height], countries)
 
-        // Show tooltip.
+        // Multi-purpose tooltip.
+        const tooltip = d3.select('#map-tooltip')
+            .style('background-color', 'white')
+            .style('border', 'solid')
+            .style('border-width', '0.5px')
+            .style('broder-radius', '5px')
+            .style('padding', vis.config.tooltipPadding)
+
+        // Show tooltip and transition.
         let mouseOverCountry = function(event, d) {
-            console.log('Mouseover')
             d3.selectAll('.country')
                 .style('opacity', 0.5)
+
+            console.log('Vis data: ', d)
+
+            tooltip.style('opacity', 1)
+                .style('left', (event.pageX + vis.config.tooltipPadding) + 'px')
+                .style('top', (event.pageY + vis.config.tooltipPadding) + 'px')
+                .html(`<div class='tooltip-title'>
+                        <div>${d.properties.name}</div>
+                        <div>${d.totalPrizeMoney}</div>
+                        <div>${d.biggestWinner}</div>
+                        </div>`)
             d3.select(this)
                 .style('stroke-width', 1.5)
                 .style('opacity', 1)
         }
 
-        // Hide tooltip.
+        // Hide tooltip and transition.
         let mouseLeaveCountry = function(event, d) {
             d3.selectAll('.country')
                 .style('opacity', 1)
