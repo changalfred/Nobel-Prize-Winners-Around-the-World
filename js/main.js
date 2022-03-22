@@ -73,7 +73,10 @@ function minMax(data) {
         maxItemByCountry.push(maxItem)
     }
 
-    return minMax.push(minItemByCountry, maxItemByCountry)
+    minMax.push(minItemByCountry)
+    minMax.push(maxItemByCountry)
+
+    return minMax
 }
 
 // Filter data here.
@@ -95,33 +98,76 @@ function filterData(rolledUpData) {
 }
 
 // Join data here.
-function joinData(topoMap, csvData) {
+function joinData(topoMap, csvData, minMaxWinnersPerCountryData) {
     const mapItems = topoMap.objects.countries.geometries
+
+    // console.log('Csv data: ', csvData)
+    // console.log('New data: ', minMaxWinnersPerCountryData)
 
     let winnerPerCountryItem = csvData[0]
     let prizeTotalPerCountryItem = csvData[1]
 
-    for (let i = 0; i < winnerPerCountryItem.length; i++) {
-        // Keys and values for winner count per country.
-        let winnerPerCountryItemElement = winnerPerCountryItem[i]
-        let winnerKey = winnerPerCountryItemElement[0]
-        let winnerValue = winnerPerCountryItemElement[1]
+    let minWinner = minMaxWinnersPerCountryData[0]
+    let maxWinner = minMaxWinnersPerCountryData[1]
 
-        // Keys and values for total prize money per country.
-        let prizeTotalPerCountryItemElement = prizeTotalPerCountryItem[i]
-        let prizeKey = prizeTotalPerCountryItemElement[0]
-        let prizeValue = prizeTotalPerCountryItemElement[1]
+    // for (let i = 0; i < winnerPerCountryItem.length; i++) {
+    //     // Keys and values for winner count per country.
+    //     let winnerPerCountryItemElement = winnerPerCountryItem[i]
+    //     let winnerKey = winnerPerCountryItemElement[0]
+    //     let winnerValue = winnerPerCountryItemElement[1]
+    //
+    //     // Keys and values for total prize money per country.
+    //     let prizeTotalPerCountryItemElement = prizeTotalPerCountryItem[i]
+    //     let prizeKey = prizeTotalPerCountryItemElement[0]
+    //     let prizeValue = prizeTotalPerCountryItemElement[1]
+    //
+    //     for (let j = 0; j < mapItems.length; j++) {
+    //         let mapItem = mapItems[j]
+    //         let mapKey = mapItem.properties.name
+    //
+    //         // Don't put an else statement and set winnerCount = 0 because it sets all values to 0.
+    //         if (winnerKey === mapKey) {
+    //             mapItem.properties.winnerCount = winnerValue
+    //         }
+    //         if (prizeKey === mapKey) {
+    //             mapItem.properties.totalPrizeMoney = prizeValue
+    //         }
+    //     }
+    // }
 
-        for (let j = 0; j < mapItems.length; j++) {
-            let mapItem = mapItems[j]
-            let mapKey = mapItem.properties.name
+    for (let i = 0; i < mapItems.length; i++) {
+        let mapItem = mapItems[i]
+        let mapKey = mapItem.properties.name
+
+        for (let j = 0; j < winnerPerCountryItem.length; j++) {
+            // Keys and values for winner count per country.
+            let winnerPerCountryItemElement = winnerPerCountryItem[j]
+            let winnerKey = winnerPerCountryItemElement[0]
+            let winnerValue = winnerPerCountryItemElement[1]
+
+            // Keys and values for total prize money per country.
+            let prizeTotalPerCountryItemElement = prizeTotalPerCountryItem[j]
+            let prizeKey = prizeTotalPerCountryItemElement[0]
+            let prizeValue = prizeTotalPerCountryItemElement[1]
+
+            // Keys and values for biggest and smallest winner per country.
+            let smallestWinner = minWinner[j]
+            let biggestWinner = maxWinner[j]
 
             // Don't put an else statement and set winnerCount = 0 because it sets all values to 0.
-            if (winnerKey === mapKey) {
+            if (mapKey === winnerKey) {
                 mapItem.properties.winnerCount = winnerValue
             }
-            if (prizeKey === mapKey) {
+            if (mapKey === prizeKey) {
                 mapItem.properties.totalPrizeMoney = prizeValue
+            }
+            if (mapKey === smallestWinner.birth_countryNow) {
+                mapItem.properties.smallestWinner = smallestWinner.fullName
+                mapItem.properties.smallestWinnerPrize = smallestWinner.prizeAmountAdjusted
+            }
+            if (mapKey === biggestWinner.birth_countryNow) {
+                mapItem.properties.biggestWinner = biggestWinner.fullName
+                mapItem.properties.biggestWinnerPrize = biggestWinner.prizeAmountAdjusted
             }
         }
     }
@@ -150,7 +196,7 @@ Promise.all([
     let rolledUpData = rollupData(abbreviationToFullData)
     let winningestCountryData = filterData(rolledUpData)     // Contains country with max winners.
     let minMaxWinnersPerCountryData = minMax(groupData(nobelPrizeData))    // Contains winners of each country.
-    let commonData = joinData(geoData, rolledUpData)
+    let commonData = joinData(geoData, rolledUpData, minMaxWinnersPerCountryData)
 
     // console.log('Common data: ', commonData)
 

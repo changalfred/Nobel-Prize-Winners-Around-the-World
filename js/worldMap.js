@@ -75,8 +75,6 @@ class NobelPrizeWorldMap {
         vis.legendStops = [{color: vis.colorScale.range[0], value: winnersCountByCountryExtent[0], offset: 0},
             {color: vis.colorScale.range[9], value: winnersCountByCountryExtent[winnersCountByCountryExtent.length - 1],
                 offset: 100}]
-        // console.log('Colour 1: ', vis.legendStops[0].color, " Value 1: ", vis.legendStops[0].value)
-        // console.log('Colour 2: ', vis.legendStops[1].color, " Value 2: ", vis.legendStops[1].value)
 
         vis.renderVis()
         vis.renderLegend()
@@ -95,52 +93,56 @@ class NobelPrizeWorldMap {
         // Scale projection so geometry fits in svg area.
         vis.projection.fitSize([vis.width, vis.height], countries)
 
-        // Multi-purpose tooltip.
-        const tooltip = d3.select('#map-tooltip')
-            .style('background-color', 'white')
-            .style('border', 'solid')
-            .style('border-width', '0.5px')
-            .style('broder-radius', '5px')
-            .style('padding', vis.config.tooltipPadding)
-
-        // Show tooltip and transition.
-        let mouseOverCountry = function(event, d) {
-            d3.selectAll('.country')
-                .style('opacity', 0.5)
-
-            console.log('Vis data: ', d)
-
-            tooltip.style('opacity', 1)
-                .style('left', (event.pageX + vis.config.tooltipPadding) + 'px')
-                .style('top', (event.pageY + vis.config.tooltipPadding) + 'px')
-                .html(`<div class='tooltip-title'>
-                        <div>${d.properties.name}</div>
-                        <div>${d.totalPrizeMoney}</div>
-                        <div>${d.biggestWinner}</div>
-                        </div>`)
-            d3.select(this)
-                .style('stroke-width', 1.5)
-                .style('opacity', 1)
-        }
-
-        // Hide tooltip and transition.
-        let mouseLeaveCountry = function(event, d) {
-            d3.selectAll('.country')
-                .style('opacity', 1)
-            d3.select(this)
-                .style('stroke-width', 0.5)
-        }
-
-        // Click on country once.
-        let mouseClickCountry = function(event, d) {
-            // TODO: Interact with other views.
-        }
-
-        // Click on country twice.
-        let mouseDoubleClickCountry = function(event, d) {
-            // TODO: Innovative view.
-
-        }
+        // // Multi-purpose tooltip.
+        // const tooltip = d3.select('#map-tooltip')
+        //     .append('div')
+        //     .style('background-color', 'white')
+        //     .style('border', 'solid')
+        //     .style('border-width', '0.5px')
+        //     .style('broder-radius', '5px')
+        //     .style('padding', vis.config.tooltipPadding)
+        //
+        // // Show tooltip and transition.
+        // let mouseOverCountry = function(event, d) {
+        //     d3.selectAll('.country')
+        //         .style('opacity', 0.5)
+        //
+        //     console.log('Vis data: ', d)
+        //
+        //     tooltip.style('display', 'block')
+        //         .style('left', (event.pageX + vis.config.tooltipPadding) + 'px')
+        //         .style('top', (event.pageY + vis.config.tooltipPadding) + 'px')
+        //         .html(`<div class='tooltip-title'>
+        //                 <div>${d.properties.name}</div>
+        //                 <div>Winner count: ${d.winnerCount}</div>
+        //                 <div>Total prize: ${d.totalPrizeMoney}</div>
+        //                 <div>Largest winner: ${d.biggestWinner}, ${d.biggestWinnerPrize}</div>
+        //                 <div>Smallest winner: ${d.smallestWinner}, ${d.smallestWinnerPrize}</div>
+        //                 </div>`)
+        //     d3.select(this)
+        //         .style('stroke-width', 1.5)
+        //         .style('opacity', 1)
+        // }
+        //
+        // // Hide tooltip and transition.
+        // let mouseLeaveCountry = function(event, d) {
+        //     d3.selectAll('.country')
+        //         .style('opacity', 1)
+        //     d3.select(this)
+        //         .style('stroke-width', 0.5)
+        //     tooltip.style('display', 'none')
+        // }
+        //
+        // // Click on country once.
+        // let mouseClickCountry = function(event, d) {
+        //     // TODO: Interact with other views.
+        // }
+        //
+        // // Click on country twice.
+        // let mouseDoubleClickCountry = function(event, d) {
+        //     // TODO: Innovative view.
+        //
+        // }
 
         const countryPath = vis.map.selectAll('.country')
             .data(countries.features)
@@ -156,10 +158,52 @@ class NobelPrizeWorldMap {
                     return 'white'
                 }
             })
-            .on('mouseover', mouseOverCountry)
-            .on('mouseleave', mouseLeaveCountry)
-            .on('click', mouseClickCountry)
-            .on('dblclick', mouseDoubleClickCountry)
+            .on('mouseover', function (event, d) {
+                if (d.properties.winnerCount > 0) {
+                    d3.selectAll('.country')
+                        .style('opacity', 0.5)
+
+                    d3.select('#map-tooltip')
+                        .style('display', 'block')
+                        .style('background', 'white')
+                        .style('border', 'solid')
+                        .style('broder-radius', '5px')
+                        .style('padding', vis.config.tooltipPadding)
+                        .style('left', (event.pageX + vis.config.tooltipPadding) + 'px')
+                        .style('top', (event.pageY + vis.config.tooltipPadding) + 'px')
+                        .html(`<div class='tooltip-title'>
+                        <div>${d.properties.name}</div>
+                        <div>Winner count: ${d.winnerCount}</div>
+                        <div>Total prize: ${d.totalPrizeMoney}</div>
+                        <div>Largest winner: ${d.biggestWinner}, ${d.biggestWinnerPrize}</div>
+                        <div>Smallest winner: ${d.smallestWinner}, ${d.smallestWinnerPrize}</div>
+                        </div>`)
+
+                    d3.select(this)
+                        .style('stroke-width', 1.5)
+                        .style('opacity', 1)
+                }
+            })
+            .on('mouseleave', function (event, d) {
+                d3.selectAll('.country')
+                    .style('opacity', 1)
+
+                d3.select('#map-tooltip')
+                    .style('display', 'none')
+
+                d3.select(this)
+                    .style('stroke-width', 0.5)
+            })
+            .on('click', function (event, d) {
+
+            })
+            .on('dblclick', function (event, d) {
+
+            })
+            // .on('mouseover', mouseOverCountry)
+            // .on('mouseleave', mouseLeaveCountry)
+            // .on('click', mouseClickCountry)
+            // .on('dblclick', mouseDoubleClickCountry)
     }
 
     renderLegend() {
