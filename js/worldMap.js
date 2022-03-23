@@ -173,10 +173,11 @@ class NobelPrizeWorldMap {
                         .style('top', (event.pageY + vis.config.tooltipPadding) + 'px')
                         .html(`<div class='tooltip-title'>
                         <div><b>${d.properties.name}</b></div>
+                        <p></p>
                         <div>Winner count: ${d.properties.winnerCount}</div>
-                        <div>Total prize (USD): $${d.properties.totalPrizeMoney}</div>
-                        <div>Largest winner: ${d.properties.biggestWinner}, $${d.properties.biggestWinnerPrize}</div>
-                        <div>Smallest winner: ${d.properties.smallestWinner}, $${d.properties.smallestWinnerPrize}</div>
+                        <div>Total prize (USD): $${Number(d.properties.totalPrizeMoney).toLocaleString()}</div>
+                        <div>Biggest winner: ${d.properties.biggestWinner} ($${Number(d.properties.biggestWinnerPrize).toLocaleString()})</div>
+                        <div>Smallest winner: ${d.properties.smallestWinner}, ($${Number(d.properties.smallestWinnerPrize).toLocaleString()})</div>
                         </div>`)
 
                     d3.select(this)
