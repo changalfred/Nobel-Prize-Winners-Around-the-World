@@ -21,3 +21,5 @@ https://stackoverflow.com/questions/2901102/how-to-print-a-number-with-commas-as
 https://towardsdatascience.com/how-to-improve-d3-js-graphs-with-annotations-252fbb9c5bb5: Styling annotation.
 
 https://github.com/susielu/d3-annotation/issues/19: Change annotation text size.
+
+https://observablehq.com/@d3/zoom-to-bounding-box?collection=@d3/d3-zoom: Various things to do with map interactivity.

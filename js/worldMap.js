@@ -71,18 +71,13 @@ class NobelPrizeWorldMap {
             className: 'anomaly',
             connector: { end: 'dot' },
             color: ['#cc0000'],
-            // data: { name: 'United States of America'},
-            x: 320,
-            y: 300,
+            x: 280,
+            y: 270,
             dx: 10,
             dy: 10
-            // type: d3.annotationCalloutCircle,
-            // subject: { radius: 60 },
-            // data: { name: 'United States of America'}
-            // dx: 70
         }]
 
-        vis.annotationBind = vis.svg.append('g')
+        vis.annotationBind = vis.map.append('g')
             .style('font-size', 12)
 
         vis.updateVis()
@@ -170,9 +165,33 @@ class NobelPrizeWorldMap {
             })
             .on('dblclick', function (event, d) {
                 // Innovative view.
+                if (d.properties.winnerCount > 0) {
+                    const zoom = d3.zoom()
+                        .scaleExtent([1, 30])
+                        .on('zoom', function (event) {
+                            const {transform} = event;
+                            vis.map.attr("transform", transform);
 
+                            // 1. Scale in entirely on first double click (all zoom functions allowed).
+
+                            // 2. Show dot density map everywhere once scaled in (all zoom functions allowed).
+
+                            // 3. When click on a dot, separate country from all of map. Show
+                            // individual stats on right (see drawing). No zoom functions allowed.
+
+                            // 4. Clicking anywhere outside a dot returns to scaled dot density map (same as 2.).
+
+                            // 5. Double click again to return to original view of all views.
+                        })
+
+                    vis.svg.call(zoom)
+                        .on('wheel.zoom', null)
+                        // .on('mousedown.zoom', null)
+                        // .on('touchmove.zoom', null)
+                        // .on('touchstart.zoom', null)
+                }
             })
-           
+
         // Create the annotation.
         const liveAnnotation = d3.annotation().annotations(vis.annotations)
 
