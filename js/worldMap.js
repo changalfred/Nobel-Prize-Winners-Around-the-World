@@ -88,7 +88,6 @@ class NobelPrizeWorldMap {
 
         // Need count of winners per country when binding to determine colour saturation.
         const countWinnerByCountryData = d3.rollups(vis.nobelPrizeData, v => v.length, d => d.birth_countryNow)
-        // console.log('Count winners by country data: ', countWinnerByCountryData)
 
         // Scale projection so geometry fits in svg area.
         vis.projection.fitSize([vis.width, vis.height], countries)
@@ -135,12 +134,12 @@ class NobelPrizeWorldMap {
         //
         // // Click on country once.
         // let mouseClickCountry = function(event, d) {
-        //     // TODO: Interact with other views.
+        //
         // }
         //
         // // Click on country twice.
         // let mouseDoubleClickCountry = function(event, d) {
-        //     // TODO: Innovative view.
+        //
         //
         // }
 
@@ -199,6 +198,7 @@ class NobelPrizeWorldMap {
 
             })
             .on('dblclick', function (event, d) {
+                // Innovative view.
 
             })
             // .on('mouseover', mouseOverCountry)

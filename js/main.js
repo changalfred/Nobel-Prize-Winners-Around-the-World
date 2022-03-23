@@ -101,39 +101,11 @@ function filterData(rolledUpData) {
 function joinData(topoMap, csvData, minMaxWinnersPerCountryData) {
     const mapItems = topoMap.objects.countries.geometries
 
-    // console.log('Csv data: ', csvData)
-    // console.log('New data: ', minMaxWinnersPerCountryData)
-
     let winnerPerCountryItem = csvData[0]
     let prizeTotalPerCountryItem = csvData[1]
 
     let minWinner = minMaxWinnersPerCountryData[0]
     let maxWinner = minMaxWinnersPerCountryData[1]
-
-    // for (let i = 0; i < winnerPerCountryItem.length; i++) {
-    //     // Keys and values for winner count per country.
-    //     let winnerPerCountryItemElement = winnerPerCountryItem[i]
-    //     let winnerKey = winnerPerCountryItemElement[0]
-    //     let winnerValue = winnerPerCountryItemElement[1]
-    //
-    //     // Keys and values for total prize money per country.
-    //     let prizeTotalPerCountryItemElement = prizeTotalPerCountryItem[i]
-    //     let prizeKey = prizeTotalPerCountryItemElement[0]
-    //     let prizeValue = prizeTotalPerCountryItemElement[1]
-    //
-    //     for (let j = 0; j < mapItems.length; j++) {
-    //         let mapItem = mapItems[j]
-    //         let mapKey = mapItem.properties.name
-    //
-    //         // Don't put an else statement and set winnerCount = 0 because it sets all values to 0.
-    //         if (winnerKey === mapKey) {
-    //             mapItem.properties.winnerCount = winnerValue
-    //         }
-    //         if (prizeKey === mapKey) {
-    //             mapItem.properties.totalPrizeMoney = prizeValue
-    //         }
-    //     }
-    // }
 
     for (let i = 0; i < mapItems.length; i++) {
         let mapItem = mapItems[i]

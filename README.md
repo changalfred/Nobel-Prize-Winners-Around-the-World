@@ -15,3 +15,5 @@ https://observablehq.com/@d3/d3-group-d3-hierarchy: Grouping winners by birth co
 
 https://stackoverflow.com/questions/307179/what-is-javascripts-highest-integer-value-that-a-number-can-go-to-without-losin:
 Get max int constant.
+
+https://stackoverflow.com/questions/2901102/how-to-print-a-number-with-commas-as-thousands-separators-in-javascript: Add commas to numbers.
