@@ -76,7 +76,7 @@ class BarChart {
         let vis = this;
 
         let bars = vis.chart.selectAll('.bar')
-            .data(vis.prize_amount_per_category) // TODO add key
+            .data(vis.prize_amount_per_category, d => vis.yValue(d))
             .join('rect')
             .attr('class', 'bar')
             .attr('x', d => 0)
