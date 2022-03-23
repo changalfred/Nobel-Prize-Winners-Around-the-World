@@ -114,57 +114,6 @@ class NobelPrizeWorldMap {
         // Scale projection so geometry fits in svg area.
         vis.projection.fitSize([vis.width, vis.height], countries)
 
-        // // Multi-purpose tooltip.
-        // const tooltip = d3.select('#map-tooltip')
-        //     .append('div')
-        //     .style('background-color', 'white')
-        //     .style('border', 'solid')
-        //     .style('border-width', '0.5px')
-        //     .style('broder-radius', '5px')
-        //     .style('padding', vis.config.tooltipPadding)
-        //
-        // // Show tooltip and transition.
-        // let mouseOverCountry = function(event, d) {
-        //     d3.selectAll('.country')
-        //         .style('opacity', 0.5)
-        //
-        //     console.log('Vis data: ', d)
-        //
-        //     tooltip.style('display', 'block')
-        //         .style('left', (event.pageX + vis.config.tooltipPadding) + 'px')
-        //         .style('top', (event.pageY + vis.config.tooltipPadding) + 'px')
-        //         .html(`<div class='tooltip-title'>
-        //                 <div>${d.properties.name}</div>
-        //                 <div>Winner count: ${d.winnerCount}</div>
-        //                 <div>Total prize: ${d.totalPrizeMoney}</div>
-        //                 <div>Largest winner: ${d.biggestWinner}, ${d.biggestWinnerPrize}</div>
-        //                 <div>Smallest winner: ${d.smallestWinner}, ${d.smallestWinnerPrize}</div>
-        //                 </div>`)
-        //     d3.select(this)
-        //         .style('stroke-width', 1.5)
-        //         .style('opacity', 1)
-        // }
-        //
-        // // Hide tooltip and transition.
-        // let mouseLeaveCountry = function(event, d) {
-        //     d3.selectAll('.country')
-        //         .style('opacity', 1)
-        //     d3.select(this)
-        //         .style('stroke-width', 0.5)
-        //     tooltip.style('display', 'none')
-        // }
-        //
-        // // Click on country once.
-        // let mouseClickCountry = function(event, d) {
-        //
-        // }
-        //
-        // // Click on country twice.
-        // let mouseDoubleClickCountry = function(event, d) {
-        //
-        //
-        // }
-
         const countryPath = vis.map.selectAll('.country')
             .data(countries.features)
             .join('path')
@@ -223,11 +172,7 @@ class NobelPrizeWorldMap {
                 // Innovative view.
 
             })
-            // .on('mouseover', mouseOverCountry)
-            // .on('mouseleave', mouseLeaveCountry)
-            // .on('click', mouseClickCountry)
-            // .on('dblclick', mouseDoubleClickCountry)
-
+           
         // Create the annotation.
         const liveAnnotation = d3.annotation().annotations(vis.annotations)
 
