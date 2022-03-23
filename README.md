@@ -17,3 +17,7 @@ https://stackoverflow.com/questions/307179/what-is-javascripts-highest-integer-v
 Get max int constant.
 
 https://stackoverflow.com/questions/2901102/how-to-print-a-number-with-commas-as-thousands-separators-in-javascript: Add commas to numbers.
+
+https://towardsdatascience.com/how-to-improve-d3-js-graphs-with-annotations-252fbb9c5bb5: Styling annotation.
+
+https://github.com/susielu/d3-annotation/issues/19: Change annotation text size.

@@ -1,5 +1,5 @@
 class NobelPrizeWorldMap {
-    constructor(_config, _commonData, _winningestCountryData, _minMaxWinnersPerCountryData,_nobelPrizeData) {
+    constructor(_config, _commonData, _winningestCountryData, _minMaxWinnersPerCountryData, _nobelPrizeData) {
         this.config = {
             parentElement: _config.parentElement,
             containerWidth: _config.containerWidth,
@@ -62,6 +62,28 @@ class NobelPrizeWorldMap {
             .attr('y', -10)
             .attr('text-anchor', 'center')
             .text('Winners Per Country')
+
+        // Annotation.
+        vis.annotations = [{
+            note: { label: 'USA has the most laureates (272). Second is UK (87). ',
+                    textSize: 12,
+                    wrap: 135 },
+            className: 'anomaly',
+            connector: { end: 'dot' },
+            color: ['#cc0000'],
+            // data: { name: 'United States of America'},
+            x: 320,
+            y: 300,
+            dx: 10,
+            dy: 10
+            // type: d3.annotationCalloutCircle,
+            // subject: { radius: 60 },
+            // data: { name: 'United States of America'}
+            // dx: 70
+        }]
+
+        vis.annotationBind = vis.svg.append('g')
+            .style('font-size', 12)
 
         vis.updateVis()
     }
@@ -176,7 +198,7 @@ class NobelPrizeWorldMap {
                         <div>Winner count: ${d.properties.winnerCount}</div>
                         <div>Total prize (USD): $${Number(d.properties.totalPrizeMoney).toLocaleString()}</div>
                         <div>Biggest winner: ${d.properties.biggestWinner} ($${Number(d.properties.biggestWinnerPrize).toLocaleString()})</div>
-                        <div>Smallest winner: ${d.properties.smallestWinner}, ($${Number(d.properties.smallestWinnerPrize).toLocaleString()})</div>
+                        <div>Smallest winner: ${d.properties.smallestWinner} ($${Number(d.properties.smallestWinnerPrize).toLocaleString()})</div>
                         </div>`)
 
                     d3.select(this)
@@ -205,6 +227,12 @@ class NobelPrizeWorldMap {
             // .on('mouseleave', mouseLeaveCountry)
             // .on('click', mouseClickCountry)
             // .on('dblclick', mouseDoubleClickCountry)
+
+        // Create the annotation.
+        const liveAnnotation = d3.annotation().annotations(vis.annotations)
+
+        vis.annotationBind
+            .call(liveAnnotation)
     }
 
     renderLegend() {
