@@ -94,8 +94,8 @@ class NobelPrizeWorldMap {
         let winnersCountByCountryExtent = [0, 20, 40, 60, 80, 100, 120, 140, 160]
         vis.colorScale.domain(winnersCountByCountryExtent)
 
-        vis.legendStops = [{color: vis.colorScale.range[0], value: winnersCountByCountryExtent[0], offset: 0},
-            {color: vis.colorScale.range[9], value: winnersCountByCountryExtent[winnersCountByCountryExtent.length - 1],
+        vis.legendStops = [{color: d3.schemeYlGn[9][0], value: winnersCountByCountryExtent[0], offset: 0},
+            {color: d3.schemeYlGn[9][8], value: winnersCountByCountryExtent[winnersCountByCountryExtent.length - 1],
                 offset: 100}]
 
         vis.renderVis()
