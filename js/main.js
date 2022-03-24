@@ -6,11 +6,13 @@ d3.csv('data/laureates.csv').then(_data => {
     // Format columns to numerical or date for easier parsing.
     data.forEach(d => {
         d.awardYear = +d.awardYear
-        d.prizeAmountAdjusted = + d.prizeAmountAdjusted
+        d.prizeAmountAdjusted = +(d.prizeAmountAdjusted.substring(1).replace(/[.,]/g, ''))
         d.dateAwarded = parseDate(d.dateAwarded)
         d.birth_date = parseDate(d.birth_date)
         d.death_date = parseDate(d.death_date)
     })
 
-    console.log("Data: ", data)
+    const bar_chart = new BarChart({
+        parentElement: '#vis-prize-per-category',
+    }, data);
 })
