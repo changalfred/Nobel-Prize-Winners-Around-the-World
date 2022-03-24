@@ -62,8 +62,8 @@ class BarChart {
     updateVis() {
         let vis = this;
 
-        vis.prize_amount_per_category = d3.rollup(vis.data, v => d3.mean(v, d => d.prizeAmountAdjusted), d => d.category);
-        vis.xScale.domain([0, d3.max(vis.prize_amount_per_category.values()) + 1e6]);
+        vis.prizeAmountPerCategory = d3.rollup(vis.data, v => d3.mean(v, d => d.prizeAmountAdjusted), d => d.category);
+        vis.xScale.domain([0, d3.max(vis.prizeAmountPerCategory.values()) + 1e6]);
 
         vis.xValue = d => d[1];
         vis.yValue = d => d[0];
@@ -76,7 +76,7 @@ class BarChart {
         let vis = this;
 
         let bars = vis.chart.selectAll('.bar')
-            .data(vis.prize_amount_per_category, d => vis.yValue(d))
+            .data(vis.prizeAmountPerCategory, d => vis.yValue(d))
             .join('rect')
             .attr('class', 'bar')
             .attr('x', d => 0)
