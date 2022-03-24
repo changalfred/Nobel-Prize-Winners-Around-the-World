@@ -3,8 +3,8 @@ class BarChart {
         this.config = {
             parentElement: _config.parentElement,
             containerWidth: 800,
-            containerHeight: 300,
-            margin: { top: 15, right: 15, bottom: 20, left: 120 }
+            containerHeight: 350,
+            margin: { top: 15, right: 15, bottom: 70, left: 120 }
         }
         this.data = _data;
         this.initVis();
@@ -29,7 +29,9 @@ class BarChart {
             .paddingInner(0.15);
 
         // Initialize axes
-        vis.xAxis = d3.axisBottom(vis.xScale).tickSizeOuter(0);
+        vis.xAxis = d3.axisBottom(vis.xScale)
+            .tickSizeOuter(0)
+            .tickFormat(d3.format("$,d"));
 
         vis.yAxis = d3.axisLeft(vis.yScale)
             .ticks(5)
@@ -44,7 +46,7 @@ class BarChart {
         // and position it according to the given margin config
         vis.chartArea = vis.svg.append('g')
             .attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top})`)
-            .attr('class', 'chart_area');
+            .attr('class', 'chart-area');
 
         vis.chart = vis.chartArea.append('g');
 
@@ -55,6 +57,14 @@ class BarChart {
         // Append y-axis group 
         vis.yAxisG = vis.chartArea.append('g')
             .attr('class', 'axis y-axis');
+
+        // Append axis titles.
+        vis.svg.append("text")
+            .attr("id", "total-prize-label")
+            .attr("text-anchor", "middle")
+            .attr("x", vis.config.containerWidth / 2 + 25)
+            .attr("y", vis.config.containerHeight - 20)
+            .text("Total Prize Money (USD)");
 
         vis.updateVis(vis.data);
     }
