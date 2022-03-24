@@ -9,17 +9,30 @@
 </head>
 
 <body>
-
-    <h1>Nobel Prize Laureates From 1975 - 2019</h1>
-    <div class="container">
-    <h1>Universities with most Nobel Prize Laureates</h1>
-    <div><svg id="treemap"></svg></div>
-
-    <div id="treemapTooltip"></div>
-
-        <div id="vis-prize-per-category"></div>
+    <div class="flexbox-container">
+        <h1 class="title">Nobel Prize Laureates From 1975 - 2019</h1>
     </div>
+    <div class="flexbox-container">
+        <!-- Geographical Map Goes Here -->
+        <div class="flexbox-item flexbox-item-1">
+            <!-- dummy image -->
+            <img src="https://dummyimage.com/16:9x1080" alt="alternatetext">
+        </div>
+    </div>
+    <div class="flexbox-container">
+        <!-- Treemap Goes Here -->
+        <div class="flexbox-item flexbox-item-2">
+            <h1>Universities with most Nobel Prize Laureates</h1>
+            <div><svg id="treemap"></svg></div>
+            <div id="treemapTooltip"></div>
+        </div>
 
+        <!-- Barchart Goes Here -->
+        <div class="flexbox-item flexbox-item-3">
+            <h1>Variation in Prize Amount per Category</h1>
+            <div id="vis-prize-per-category"></div>
+        </div>
+    </div>
 
     <script src="js/d3.v6.min.js"></script>
     <script src="js/treemap.js"></script>

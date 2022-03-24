@@ -3,7 +3,7 @@ const parseDate = d3.timeParse('%Y-%m-%d')
 const treemapDispatcher = d3.dispatch('treemapFilter');
 
 d3.csv('data/laureates.csv').then(_data => {
-    var data = _data
+    let data = _data
 
     // Format columns to numerical or date for easier parsing.
     data.forEach(d => {
@@ -19,8 +19,9 @@ d3.csv('data/laureates.csv').then(_data => {
         parentElement: '#treemap',
     }, treemapDispatcher, data);
     treemap.updateVis();
-    
+
     const bar_chart = new BarChart({
         parentElement: '#vis-prize-per-category',
     }, data);
+    bar_chart.updateVis();
 })

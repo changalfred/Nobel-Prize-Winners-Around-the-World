@@ -3,7 +3,7 @@ class Treemap {
         // Configuration object with defaults
         this.config = {
             parentElement: _config.parentElement,
-            containerWidth: _config.containerWidth || 800,
+            containerWidth: _config.containerWidth || 1000,
             containerHeight: _config.containerHeight || 800,
             tooltipPadding: _config.tooltipPadding || 15,
             margin: _config.margin || { top: 10, right: 10, bottom: 10, left: 10 },
