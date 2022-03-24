@@ -65,7 +65,7 @@ class NobelPrizeWorldMap {
 
         // Annotation.
         vis.annotations = [{
-            note: { label: 'USA has the most laureates (272). Second is UK (87). ',
+            note: { label: 'USA has the most laureates (272).',
                     textSize: 12,
                     wrap: 135 },
             className: 'anomaly',
