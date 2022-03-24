@@ -12,60 +12,60 @@ class NobelPrizeWorldMap {
             legendHeight: 20
         }
 
-        this.commonData = _commonData
-        this.winningestCountryData = _winningestCountryData
-        this.minMaxWinnersPerCountryData = _minMaxWinnersPerCountryData
-        this.nobelPrizeData = _nobelPrizeData
-        this.initVis()
-    }
+        this.commonData = _commonData;
+        this.winningestCountryData = _winningestCountryData;
+        this.minMaxWinnersPerCountryData = _minMaxWinnersPerCountryData;
+        this.nobelPrizeData = _nobelPrizeData;
+        this.initVis();
+    };
 
     initVis() {
         let vis = this
 
         // Set margins.
-        vis.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right
-        vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom
+        vis.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right;
+        vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom;
 
         vis.svg = d3.select(vis.config.parentElement)
             .append('svg')
             .attr('width', vis.config.containerWidth)
-            .attr('height', vis.config.containerHeight)
+            .attr('height', vis.config.containerHeight);
 
         vis.map = vis.svg.append('g')
-            .attr('transform', `translate(${vis.config.margin.left}, ${vis.config.margin.top})`)
+            .attr('transform', `translate(${vis.config.margin.left}, ${vis.config.margin.top})`);
 
         // Initialize projection and path generator.
         vis.projection = d3.geoEquirectangular()    // Easiest to point at small countries with cursor.
             .scale([vis.width / (2 * Math.PI)])
             .translate([vis.width / 2, vis.height / 2])
-        vis.geoPath = d3.geoPath().projection(vis.projection)
+        vis.geoPath = d3.geoPath().projection(vis.projection);
 
         vis.colorScale = d3.scaleThreshold()
-            .range(d3.schemeYlGn[9])
+            .range(d3.schemeYlGn[9]);
 
         // Set up legend.
         vis.linearGradient = vis.svg.append('defs')
             .append('linearGradient')
-            .attr('id', 'legend-gradient')
+            .attr('id', 'legend-gradient');
 
         vis.legend = vis.map.append('g')
             .attr('class', 'legend')
-            .attr('transform', `translate(${vis.config.legendMarginLeft}, ${vis.config.legendMarginTop})`)
+            .attr('transform', `translate(${vis.config.legendMarginLeft}, ${vis.config.legendMarginTop})`);
 
         vis.legendRect = vis.legend.append('rect')
             .attr('width', vis.config.legendWidth)
-            .attr('height', vis.config.legendHeight)
+            .attr('height', vis.config.legendHeight);
 
         vis.legendTitle = vis.legend.append('text')
             .attr('class', 'legend-title')
             .attr('dy', '.35em')
             .attr('y', -10)
             .attr('text-anchor', 'center')
-            .text('Winners Per Country')
+            .text('Winners Per Country');
 
         // Annotation.
         vis.annotations = [{
-            note: { label: 'USA has the most laureates (272).',
+            note: { label: 'USA has the most laureates with 272.',
                     textSize: 12,
                     wrap: 135 },
             className: 'anomaly',
@@ -75,39 +75,39 @@ class NobelPrizeWorldMap {
             y: 270,
             dx: 10,
             dy: 10
-        }]
+        }];
 
         vis.annotationBind = vis.map.append('g')
-            .style('font-size', 12)
+            .style('font-size', 12);
 
-        vis.updateVis()
+        vis.updateVis();
     }
 
     updateVis() {
-        let vis = this
+        let vis = this;
 
-        let winnersCountByCountryExtent = [0, 20, 40, 60, 80, 100, 120, 140, 160]
-        vis.colorScale.domain(winnersCountByCountryExtent)
+        let winnersCountByCountryExtent = [0, 20, 40, 60, 80, 100, 120, 140, 160];
+        vis.colorScale.domain(winnersCountByCountryExtent);
 
         vis.legendStops = [{color: d3.schemeYlGn[9][0], value: winnersCountByCountryExtent[0], offset: 0},
             {color: d3.schemeYlGn[9][8], value: winnersCountByCountryExtent[winnersCountByCountryExtent.length - 1],
-                offset: 100}]
+                offset: 100}];
 
-        vis.renderVis()
-        vis.renderLegend()
+        vis.renderVis();
+        vis.renderLegend();
     }
 
     renderVis() {
-        let vis = this
+        let vis = this;
 
         // Convert TopoJson -> GeoJson.
-        const countries = topojson.feature(vis.commonData, vis.commonData.objects.countries)
+        const countries = topojson.feature(vis.commonData, vis.commonData.objects.countries);
 
         // Need count of winners per country when binding to determine colour saturation.
-        const countWinnerByCountryData = d3.rollups(vis.nobelPrizeData, v => v.length, d => d.birth_countryNow)
+        const countWinnerByCountryData = d3.rollups(vis.nobelPrizeData, v => v.length, d => d.birth_countryNow);
 
         // Scale projection so geometry fits in svg area.
-        vis.projection.fitSize([vis.width, vis.height], countries)
+        vis.projection.fitSize([vis.width, vis.height], countries);
 
         const countryPath = vis.map.selectAll('.country')
             .data(countries.features)
@@ -118,15 +118,15 @@ class NobelPrizeWorldMap {
             .attr('stroke-width', 0.5)
             .attr('fill', d => {
                 if (d.properties.winnerCount) {
-                    return vis.colorScale(d.properties.winnerCount)
+                    return vis.colorScale(d.properties.winnerCount);
                 } else {
-                    return 'white'
+                    return 'white';
                 }
             })
             .on('mouseover', function (event, d) {
                 if (d.properties.winnerCount > 0) {
                     d3.selectAll('.country')
-                        .style('opacity', 0.5)
+                        .style('opacity', 0.5);
 
                     d3.select('#map-tooltip')
                         .style('display', 'block')
@@ -143,22 +143,22 @@ class NobelPrizeWorldMap {
                         <div>Total prize (USD): $${Number(d.properties.totalPrizeMoney).toLocaleString()}</div>
                         <div>Biggest winner: ${d.properties.biggestWinner} ($${Number(d.properties.biggestWinnerPrize).toLocaleString()})</div>
                         <div>Smallest winner: ${d.properties.smallestWinner} ($${Number(d.properties.smallestWinnerPrize).toLocaleString()})</div>
-                        </div>`)
+                        </div>`);
 
                     d3.select(this)
                         .style('stroke-width', 1.5)
-                        .style('opacity', 1)
+                        .style('opacity', 1);
                 }
             })
             .on('mouseleave', function (event, d) {
                 d3.selectAll('.country')
-                    .style('opacity', 1)
+                    .style('opacity', 1);
 
                 d3.select('#map-tooltip')
-                    .style('display', 'none')
+                    .style('display', 'none');
 
                 d3.select(this)
-                    .style('stroke-width', 0.5)
+                    .style('stroke-width', 0.5);
             })
             .on('click', function (event, d) {
 
@@ -185,7 +185,7 @@ class NobelPrizeWorldMap {
                         })
 
                     vis.svg.call(zoom)
-                        .on('wheel.zoom', null)
+                        .on('wheel.zoom', null);
                         // .on('mousedown.zoom', null)
                         // .on('touchmove.zoom', null)
                         // .on('touchstart.zoom', null)
@@ -193,14 +193,14 @@ class NobelPrizeWorldMap {
             })
 
         // Create the annotation.
-        const liveAnnotation = d3.annotation().annotations(vis.annotations)
+        const liveAnnotation = d3.annotation().annotations(vis.annotations);
 
         vis.annotationBind
-            .call(liveAnnotation)
+            .call(liveAnnotation);
     }
 
     renderLegend() {
-        let vis = this
+        let vis = this;
 
         vis.legend.selectAll('.legend-label')
             .data(vis.legendStops)
@@ -209,16 +209,16 @@ class NobelPrizeWorldMap {
             .attr('dy', '.35em')
             .attr('y', 20)
             .attr('x', (d, i) => {
-                return i === 0 ? 0 : vis.config.legendWidth
+                return i === 0 ? 0 : vis.config.legendWidth;
             })
-            .text(d => Math.round(d.value * 10) / 10)
+            .text(d => Math.round(d.value * 10) / 10);
 
         vis.linearGradient.selectAll('.stop')
             .data(vis.legendStops)
             .join('stop')
             .attr('offset', d => d.offset)
-            .attr('stop-color', d => d.color)
+            .attr('stop-color', d => d.color);
 
-        vis.legendRect.attr('fill', 'url(#legend-gradient)')
+        vis.legendRect.attr('fill', 'url(#legend-gradient)');
     }
 }
