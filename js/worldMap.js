@@ -44,24 +44,40 @@ class NobelPrizeWorldMap {
             .range(d3.schemeYlGn[9]);
 
         // Set up legend.
-        vis.linearGradient = vis.svg.append('defs')
-            .append('linearGradient')
-            .attr('id', 'legend-gradient');
+        // vis.linearGradient = vis.svg.append('defs')
+        //     .append('linearGradient')
+        //     .attr('id', 'legend-gradient');
+        //
+        // vis.legend = vis.map.append('g')
+        //     .attr('class', 'legend')
+        //     .attr('transform', `translate(${vis.config.legendMarginLeft}, ${vis.config.legendMarginTop})`);
+        //
+        // vis.legendRect = vis.legend.append('rect')
+        //     .attr('width', vis.config.legendWidth)
+        //     .attr('height', vis.config.legendHeight);
+        //
+        // vis.legendTitle = vis.legend.append('text')
+        //     .attr('class', 'legend-title')
+        //     .attr('dy', '.35em')
+        //     .attr('y', -10)
+        //     .attr('text-anchor', 'center')
+        //     .text('Winners Per Country');
 
-        vis.legend = vis.map.append('g')
-            .attr('class', 'legend')
-            .attr('transform', `translate(${vis.config.legendMarginLeft}, ${vis.config.legendMarginTop})`);
+        vis.colorScale = d3.scaleThreshold()
+            .range(d3.schemeYlGn[5]);
+        console.log('Colour scheme: ', d3.schemeYlGn[5])
 
-        vis.legendRect = vis.legend.append('rect')
-            .attr('width', vis.config.legendWidth)
-            .attr('height', vis.config.legendHeight);
+        const linear = d3.scaleLinear()
+            .domain([0, 100])
+            .range([d3.schemeYlGn[5][0], d3.schemeYlGn[5][4]])
 
-        vis.legendTitle = vis.legend.append('text')
-            .attr('class', 'legend-title')
-            .attr('dy', '.35em')
-            .attr('y', -10)
-            .attr('text-anchor', 'center')
-            .text('Winners Per Country');
+        vis.map.append('g')
+            .attr('class', 'legend-linear')
+            .attr('transform', `translate(${vis.config.legendMarginLeft}, ${vis.config.legendMarginTop})`)
+
+        vis.legendLinear = d3.legendColor().shapeWidth(30)
+            .orient('horizontal')
+            .scale(linear)
 
         // Annotation.
         vis.annotations = [{
@@ -86,7 +102,7 @@ class NobelPrizeWorldMap {
     updateVis() {
         let vis = this;
 
-        let winnersCountByCountryExtent = [0, 20, 40, 60, 80, 100, 120, 140, 160];
+        let winnersCountByCountryExtent = [0, 20, 40, 60, 80, 100];
         vis.colorScale.domain(winnersCountByCountryExtent);
 
         vis.legendStops = [{color: d3.schemeYlGn[9][0], value: winnersCountByCountryExtent[0], offset: 0},
@@ -202,23 +218,27 @@ class NobelPrizeWorldMap {
     renderLegend() {
         let vis = this;
 
-        vis.legend.selectAll('.legend-label')
-            .data(vis.legendStops)
-            .join('text')
-            .attr('class', 'legend-label')
-            .attr('dy', '.35em')
-            .attr('y', 20)
-            .attr('x', (d, i) => {
-                return i === 0 ? 0 : vis.config.legendWidth;
-            })
-            .text(d => Math.round(d.value * 10) / 10);
+        vis.map.select('.legend-linear')
+            .call(vis.legendLinear)
 
-        vis.linearGradient.selectAll('.stop')
-            .data(vis.legendStops)
-            .join('stop')
-            .attr('offset', d => d.offset)
-            .attr('stop-color', d => d.color);
 
-        vis.legendRect.attr('fill', 'url(#legend-gradient)');
+        // vis.legend.selectAll('.legend-label')
+        //     .data(vis.legendStops)
+        //     .join('text')
+        //     .attr('class', 'legend-label')
+        //     .attr('dy', '.35em')
+        //     .attr('y', 20)
+        //     .attr('x', (d, i) => {
+        //         return i === 0 ? 0 : vis.config.legendWidth;
+        //     })
+        //     .text(d => Math.round(d.value * 10) / 10);
+        //
+        // vis.linearGradient.selectAll('.stop')
+        //     .data(vis.legendStops)
+        //     .join('stop')
+        //     .attr('offset', d => d.offset)
+        //     .attr('stop-color', d => d.color);
+        //
+        // vis.legendRect.attr('fill', 'url(#legend-gradient)');
     }
 }
