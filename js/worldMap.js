@@ -31,6 +31,9 @@ class NobelPrizeWorldMap {
             .attr('width', vis.config.containerWidth)
             .attr('height', vis.config.containerHeight);
 
+        vis.svg.append('text')
+            .text('Distribution of Winners By Country');
+
         vis.map = vis.svg.append('g')
             .attr('transform', `translate(${vis.config.margin.left}, ${vis.config.margin.top})`);
 
@@ -41,7 +44,8 @@ class NobelPrizeWorldMap {
         vis.geoPath = d3.geoPath().projection(vis.projection);
 
         vis.colorScale = d3.scaleThreshold()
-            .range(d3.schemeYlGn[9]);
+            .range(d3.schemeYlGn[5]);
+        console.log(vis.colorScale.range())
 
         // Set up legend.
         // vis.linearGradient = vis.svg.append('defs')
@@ -64,12 +68,12 @@ class NobelPrizeWorldMap {
         //     .text('Winners Per Country');
 
         vis.colorScale = d3.scaleThreshold()
-            .range(d3.schemeYlGn[5]);
+            .range(d3.schemeYlGn[5]);   // Insert custom colours here: white, ... etc.
         console.log('Colour scheme: ', d3.schemeYlGn[5])
 
         const linear = d3.scaleLinear()
             .domain([0, 100])
-            .range([d3.schemeYlGn[5][0], d3.schemeYlGn[5][4]])
+            .range(['#ffffff', d3.schemeYlGn[5][4]])
 
         vis.map.append('g')
             .attr('class', 'legend-linear')
@@ -81,7 +85,7 @@ class NobelPrizeWorldMap {
 
         // Annotation.
         vis.annotations = [{
-            note: { label: 'USA has the most laureates with 272.',
+            note: { label: 'USA has the most laureates at 272.',
                     textSize: 12,
                     wrap: 135 },
             className: 'anomaly',
@@ -105,9 +109,9 @@ class NobelPrizeWorldMap {
         let winnersCountByCountryExtent = [0, 20, 40, 60, 80, 100];
         vis.colorScale.domain(winnersCountByCountryExtent);
 
-        vis.legendStops = [{color: d3.schemeYlGn[9][0], value: winnersCountByCountryExtent[0], offset: 0},
-            {color: d3.schemeYlGn[9][8], value: winnersCountByCountryExtent[winnersCountByCountryExtent.length - 1],
-                offset: 100}];
+        // vis.legendStops = [{color: d3.schemeYlGn[9][0], value: winnersCountByCountryExtent[0], offset: 0},
+        //     {color: d3.schemeYlGn[9][8], value: winnersCountByCountryExtent[winnersCountByCountryExtent.length - 1],
+        //         offset: 100}];
 
         vis.renderVis();
         vis.renderLegend();
