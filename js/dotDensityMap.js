@@ -30,13 +30,15 @@
             .attr('height', vis.config.containerHeight);
 
         vis.svg.append('text')
+            .attr('dx', vis.width / 2)
+            .attr('dy', 20)
             .text('Winners in [Country Name]');
 
         vis.ddMap = vis.svg.append('g')
             .attr('transform', `translate(${vis.config.margin.left}, ${vis.config.margin.top})`);
 
         // Initialize projection and path generator.
-        vis.projection = d3.geoAlbers()    // Easiest to point at small countries with cursor.
+        vis.projection = d3.geoMercator()    // Easiest to point at small countries with cursor.
             .center([2, 47])
             .scale([vis.width / (2 * Math.PI)])
             .translate([vis.width / 2, vis.height / 2])
