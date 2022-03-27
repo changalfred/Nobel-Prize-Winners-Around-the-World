@@ -6,7 +6,7 @@ class NobelPrizeWorldMap {
             containerHeight: _config.containerHeight,
             margin: {top: 35, right: 10, bottom: 10, left: 35},
             tooltipPadding: 10,
-            legendMarginTop: 450,
+            legendMarginTop: 375,
             legendMarginLeft: 35,
             legendWidth: 150,
             legendHeight: 20
@@ -44,44 +44,8 @@ class NobelPrizeWorldMap {
         vis.geoPath = d3.geoPath().projection(vis.projection);
 
         vis.colorScale = d3.scaleThreshold()
-            .range(d3.schemeYlGn[5]);
+            .range(d3.schemeYlGn[6]);
         console.log(vis.colorScale.range())
-
-        // Set up legend.
-        // vis.linearGradient = vis.svg.append('defs')
-        //     .append('linearGradient')
-        //     .attr('id', 'legend-gradient');
-        //
-        // vis.legend = vis.map.append('g')
-        //     .attr('class', 'legend')
-        //     .attr('transform', `translate(${vis.config.legendMarginLeft}, ${vis.config.legendMarginTop})`);
-        //
-        // vis.legendRect = vis.legend.append('rect')
-        //     .attr('width', vis.config.legendWidth)
-        //     .attr('height', vis.config.legendHeight);
-        //
-        // vis.legendTitle = vis.legend.append('text')
-        //     .attr('class', 'legend-title')
-        //     .attr('dy', '.35em')
-        //     .attr('y', -10)
-        //     .attr('text-anchor', 'center')
-        //     .text('Winners Per Country');
-
-        vis.colorScale = d3.scaleThreshold()
-            .range(d3.schemeYlGn[5]);   // Insert custom colours here: white, ... etc.
-        console.log('Colour scheme: ', d3.schemeYlGn[5])
-
-        const linear = d3.scaleLinear()
-            .domain([0, 100])
-            .range(['#ffffff', d3.schemeYlGn[5][4]])
-
-        vis.map.append('g')
-            .attr('class', 'legend-linear')
-            .attr('transform', `translate(${vis.config.legendMarginLeft}, ${vis.config.legendMarginTop})`)
-
-        vis.legendLinear = d3.legendColor().shapeWidth(30)
-            .orient('horizontal')
-            .scale(linear)
 
         // Annotation.
         vis.annotations = [{
@@ -106,12 +70,8 @@ class NobelPrizeWorldMap {
     updateVis() {
         let vis = this;
 
-        let winnersCountByCountryExtent = [0, 20, 40, 60, 80, 100];
+        let winnersCountByCountryExtent = [0, 25, 50, 75, 100];
         vis.colorScale.domain(winnersCountByCountryExtent);
-
-        // vis.legendStops = [{color: d3.schemeYlGn[9][0], value: winnersCountByCountryExtent[0], offset: 0},
-        //     {color: d3.schemeYlGn[9][8], value: winnersCountByCountryExtent[winnersCountByCountryExtent.length - 1],
-        //         offset: 100}];
 
         vis.renderVis();
         vis.renderLegend();
@@ -129,7 +89,7 @@ class NobelPrizeWorldMap {
         // Scale projection so geometry fits in svg area.
         vis.projection.fitSize([vis.width, vis.height], countries);
 
-        const countryPath = vis.map.selectAll('.country')
+        vis.countryPath = vis.map.selectAll('.country')
             .data(countries.features)
             .join('path')
             .attr('class', 'country')
@@ -140,7 +100,7 @@ class NobelPrizeWorldMap {
                 if (d.properties.winnerCount) {
                     return vis.colorScale(d.properties.winnerCount);
                 } else {
-                    return 'white';
+                    return d3.schemeYlGn[6][0];
                 }
             })
             .on('mouseover', function (event, d) {
@@ -152,7 +112,7 @@ class NobelPrizeWorldMap {
                         .style('display', 'block')
                         .style('background', 'white')
                         .style('border', 'solid')
-                        .style('broder-radius', '5px')
+                        .style('border-radius', '5px')
                         .style('padding', vis.config.tooltipPadding)
                         .style('left', (event.pageX + vis.config.tooltipPadding) + 'px')
                         .style('top', (event.pageY + vis.config.tooltipPadding) + 'px')
@@ -222,27 +182,78 @@ class NobelPrizeWorldMap {
     renderLegend() {
         let vis = this;
 
-        vis.map.select('.legend-linear')
-            .call(vis.legendLinear)
+        vis.legendLinear = vis.map.append('g')
+            .attr('class', 'legend-threshold')
+            .attr('transform', `translate(${vis.config.legendMarginLeft}, ${vis.config.legendMarginTop})`)
 
-
-        // vis.legend.selectAll('.legend-label')
-        //     .data(vis.legendStops)
-        //     .join('text')
-        //     .attr('class', 'legend-label')
-        //     .attr('dy', '.35em')
-        //     .attr('y', 20)
-        //     .attr('x', (d, i) => {
-        //         return i === 0 ? 0 : vis.config.legendWidth;
+        // TODO: Uncomment this and show view and web example.
+        // vis.legendLinear.selectAll('rect')
+        //     .each(function (d, i, nodes) {
+        //         console.log('d, i, nodes', d, i, nodes)
+        //         nodes[i].classList.add(vis.colorScale(d))
         //     })
-        //     .text(d => Math.round(d.value * 10) / 10);
-        //
-        // vis.linearGradient.selectAll('.stop')
-        //     .data(vis.legendStops)
-        //     .join('stop')
-        //     .attr('offset', d => d.offset)
-        //     .attr('stop-color', d => d.color);
-        //
-        // vis.legendRect.attr('fill', 'url(#legend-gradient)');
+
+        vis.legendLinear = d3.legendColor().shapeWidth(40)
+            .orient('vertical')
+            .title('Winner Count')
+            .shapePadding(-3)
+            .labels(['<1', '1 - 25', '26 - 50', '51 - 75', '76 - 100', '>100'])
+            .labelFormat(d3.format(','))
+            .scale(vis.colorScale)
+            // .useClass(true)  // TODO: Uncomment this and show view and web example.
+            .on('cellover', function (d, i, event) {
+                const countries = topojson.feature(vis.commonData, vis.commonData.objects.countries);
+                let countryIds = []
+                let count = d3.select(this)._groups[0][0].textContent
+
+                if (count === '<1') {
+                    console.log(countries)
+                    d3.selectAll('.country')
+                        .style('opacity', 0.5);
+
+                    let item = countries.features
+                    for (let i = 0; i < item.length; i++) {
+                        console.log('Properties: ', item[i])
+                        if (item[i].properties.winnerCount === 0) {
+                            // const match = item[i].classed('match-legend-bin')
+                            let countryId = item[i].id
+                            countryIds.push(countryId)
+                            // vis.countryPath     // Take only relevant country paths.
+                            //     .style('stroke-width', 1.5)
+                            //     .style('opacity', 1)
+                        }
+                    }
+
+                    d3.selectAll('.match-legend-bin')
+                        .style('stroke-width', 1.5)
+                        .style('opacity', 1)
+                } else if (count === '1 - 25') {
+
+                } else if (count === '26 - 50') {
+
+                } else if (count === '51 - 75') {
+
+                } else if (count === '76 - 100') {
+
+                } else {
+
+                }
+
+                d3.selectAll('.country')
+                    .style('stroke-width', 1.5)
+                    .style('opacity', 1)
+            })
+            .on('cellout', function (d, event) {
+                console.log('Cell out.')
+                d3.selectAll('.country')
+                    .style('opacity', 1)
+                    .style('stroke-width', 0.5)
+
+                // d3.select(this)
+                //     .style('stroke-width', 0.5);
+            })
+
+        vis.map.select('.legend-threshold')
+            .call(vis.legendLinear)
     }
 }

@@ -116,6 +116,7 @@ function joinData(topoMap, csvData, minMaxWinnersPerCountryData) {
             let winnerPerCountryItemElement = winnerPerCountryItem[j]
             let winnerKey = winnerPerCountryItemElement[0]
             let winnerValue = winnerPerCountryItemElement[1]
+            // console.log('Winner value: ', winnerPerCountryItemElement)
 
             // Keys and values for total prize money per country.
             let prizeTotalPerCountryItemElement = prizeTotalPerCountryItem[j]
@@ -141,6 +142,13 @@ function joinData(topoMap, csvData, minMaxWinnersPerCountryData) {
                 mapItem.properties.biggestWinner = biggestWinner.fullName
                 mapItem.properties.biggestWinnerPrize = biggestWinner.prizeAmountAdjusted
             }
+        }
+    }
+
+    // Set remaining countries without any winners to have winnerCount = 0.
+    for (let i = 0; i < mapItems.length; i++) {
+        if (!mapItems[i].properties.winnerCount) {
+            mapItems[i].properties.winnerCount = 0
         }
     }
 
@@ -173,7 +181,7 @@ Promise.all([
     // console.log('Common data: ', commonData)
 
     const prizeWorldMap = new NobelPrizeWorldMap({
-        parentElement:  '#vis-container-map',
+        parentElement: '#vis-container-map',
         containerWidth: 1000,
         containerHeight: 800
     }, commonData, winningestCountryData, minMaxWinnersPerCountryData, nobelPrizeData)
