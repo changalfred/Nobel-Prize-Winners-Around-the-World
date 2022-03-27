@@ -97,6 +97,18 @@ function filterData(rolledUpData) {
     return max
 }
 
+function filterAntarctica(data) {
+    let mapItems = data.objects.countries.geometries
+
+    for (let i = 0; i < mapItems.length; i++) {
+        if (mapItems[i].properties.name === 'Antarctica') {
+            mapItems.splice(i, 1)
+        }
+    }
+
+    return data
+}
+
 // Join data here.
 function joinData(topoMap, csvData, minMaxWinnersPerCountryData) {
     const mapItems = topoMap.objects.countries.geometries
@@ -176,6 +188,7 @@ Promise.all([
     let rolledUpData = rollupData(abbreviationToFullData)
     let winningestCountryData = filterData(rolledUpData)     // Contains country with max winners.
     let minMaxWinnersPerCountryData = minMax(groupData(nobelPrizeData))    // Contains winners of each country.
+    let remAtaGeoData = filterAntarctica(geoData)
     let commonData = joinData(geoData, rolledUpData, minMaxWinnersPerCountryData)
 
     // console.log('Common data: ', commonData)
