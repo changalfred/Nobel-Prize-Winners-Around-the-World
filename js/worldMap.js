@@ -200,10 +200,11 @@ class NobelPrizeWorldMap {
             .labels(['<1', '1 - 25', '26 - 50', '51 - 75', '76 - 100', '>100'])
             .labelFormat(d3.format(','))
             .scale(vis.colorScale)
+            // .classPrefix(i => `${i}-`)
             // .useClass(true)  // TODO: Uncomment this and show view and web example.
             .on('cellover', function (d, i, event) {
                 const countries = topojson.feature(vis.commonData, vis.commonData.objects.countries);
-                let countryIds = []
+                let countryWinnerCountBins = []
                 let count = d3.select(this)._groups[0][0].textContent
 
                 if (count === '<1') {
