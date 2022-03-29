@@ -30,6 +30,7 @@ function groupData(csvData) {
     return d3.groups(csvData, d => d.birth_countryNow)
 }
 
+// Find min and max of data.
 function minMax(csvData) {
     let minMax = []
     let minItemByCountry = []
@@ -176,6 +177,13 @@ Promise.all([
         containerHeight: 500
     }, commonData, nobelPrizeData)
     prizeWorldMap.updateVis()
+  
+    const densityMap = new DotDensityMap({
+        parentElement: '#vis-container-dot-density-map',
+        containerWidth: 600,
+        containerHeight: 600
+    }, commonData, nobelPrizeData)
+    densityMap.updateVis()
 
     const treemap = new Treemap({
         parentElement: '#treemap',

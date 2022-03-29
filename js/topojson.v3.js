@@ -1806,5 +1806,4 @@
     exports.sphericalTriangleArea = sphericalTriangleArea;
 
     Object.defineProperty(exports, '__esModule', { value: true });
-
 })));
