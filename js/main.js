@@ -1,14 +1,13 @@
 const parseDate = d3.timeParse('%Y-%m-%d')
 
-// Ensure fields match values in json data.
-function changeField(csvData) {
+const treemapDispatcher = d3.dispatch('treemapFilter');
+
+function convertField(csvData, from, to) {
     for (let i = 0; i < csvData.length; i++) {
-        if (csvData[i].birth_countryNow === 'USA') {
-            csvData[i].birth_countryNow = 'United States of America'
+        if (csvData[i].birth_countryNow === from) {
+            csvData[i].birth_countryNow = to
         }
     }
-
-    return csvData
 }
 
 // Roll up data here.
@@ -20,7 +19,7 @@ function rollupData(csvData) {
     data.push(rollupWinnersPerCountry)
 
     // Data stores total prize per country for tooltip in map.
-    let rollupPrizePerCountry = d3.rollups(csvData, v => d3.sum(v, d => d.prizeAmountAdjusted), d => d.birth_countryNow)
+    let rollupPrizePerCountry = d3.rollups(csvData, v => d3.sum(v, v => v.prizeAmountAdjusted), d => d.birth_countryNow)
     data.push(rollupPrizePerCountry)
 
     return data
@@ -32,14 +31,13 @@ function groupData(csvData) {
 }
 
 // Find min and max of data.
-// TODO: Clean up this function.
-function minMax(data) {
+function minMax(csvData) {
     let minMax = []
     let minItemByCountry = []
     let maxItemByCountry = []
 
-    for (let i = 0; i < data.length; i++) {
-        let item = data[i][1]
+    for (let i = 0; i < csvData.length; i++) {
+        let item = csvData[i][1]
         let minItem = item[0]
 
         for (let j = 0; j < item.length; j++) {
@@ -47,8 +45,7 @@ function minMax(data) {
 
             // Find min.
             if (item[j].prizeAmountAdjusted < minItem.prizeAmountAdjusted) {
-                min = item[j]       // item[j] must be of type array because later iterations do not compare, since minItem[1] is not an array but an array of object.
-                                    // This means only the first item of each country is pushed to return result.
+                min = item[j]
                 minItem = min
             }
         }
@@ -56,8 +53,8 @@ function minMax(data) {
         minItemByCountry.push(minItem)
     }
 
-    for (let i = 0; i < data.length; i++) {
-        let item = data[i][1]
+    for (let i = 0; i < csvData.length; i++) {
+        let item = csvData[i][1]
         let maxItem = item[0]
 
         for (let j = 0; j < item.length; j++) {
@@ -79,22 +76,14 @@ function minMax(data) {
     return minMax
 }
 
-// Filter data here.
-function filterData(rolledUpData) {
-    let max = []
+function filterData(mapData, key) {
+    let mapItems = mapData.objects.countries.geometries
 
-    // Find country with most winners.
-    let maxWinnerCountry = ['', 0]
-    for (let i = 0; i < rolledUpData[0].length; i++) {
-        let rolledUpItem = rolledUpData[0][i]
-
-        if (rolledUpItem[1] > maxWinnerCountry[1]) {
-            maxWinnerCountry = rolledUpItem
+    for (let i = 0; i < mapItems.length; i++) {
+        if (mapItems[i].properties.name === key) {
+            mapItems.splice(i, 1)
         }
     }
-    max.push(maxWinnerCountry)
-
-    return max
 }
 
 // Join data here.
@@ -170,21 +159,41 @@ Promise.all([
         d.dateAwarded = parseDate(d.dateAwarded)
         d.birth_date = parseDate(d.birth_date)
         d.death_date = parseDate(d.death_date)
+        d.affiliation_1 = d.affiliation_1.split(",");
     })
 
-    let abbreviationToFullData = changeField(nobelPrizeData)
-    let rolledUpData = rollupData(abbreviationToFullData)
-    let winningestCountryData = filterData(rolledUpData)     // Contains country with max winners.
-    let minMaxWinnersPerCountryData = minMax(groupData(nobelPrizeData))    // Contains winners of each country.
-    let commonData = joinData(geoData, rolledUpData, minMaxWinnersPerCountryData)
+    // Manipulate data.
+    convertField(nobelPrizeData, 'USA', 'United States of America')
+    filterData(geoData, 'Antarctica')
+    let rolledData = rollupData(nobelPrizeData)
+    let minMaxData = minMax(groupData(nobelPrizeData))
+    let commonData = joinData(geoData, rolledData, minMaxData)
 
-    // console.log('Common data: ', commonData)
+    console.log('Common data: ', commonData)
 
-    const prizeWorldMap = new DotDensityMap({
+    const prizeWorldMap = new NobelPrizeWorldMap({
+        parentElement: '#vis-container-map',
+        containerWidth: 1000,
+        containerHeight: 500
+    }, commonData, nobelPrizeData)
+    prizeWorldMap.updateVis()
+  
+    const densityMap = new DotDensityMap({
         parentElement: '#vis-container-dot-density-map',
         containerWidth: 600,
         containerHeight: 600
     }, commonData, nobelPrizeData)
+    densityMap.updateVis()
 
-    prizeWorldMap.updateVis()
+    const treemap = new Treemap({
+        parentElement: '#treemap',
+        containerWidth: 500,
+        containerHeight: 500
+    }, treemapDispatcher, nobelPrizeData);
+    treemap.updateVis();
+
+    const bar_chart = new BarChart({
+        parentElement: '#vis-prize-per-category',
+    }, nobelPrizeData);
+    bar_chart.updateVis();
 })
