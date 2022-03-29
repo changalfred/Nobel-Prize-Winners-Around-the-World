@@ -12,69 +12,82 @@
             legendHeight: 20
         }
 
-        this.commonData = _commonData;
-        this.nobelPrizeData = _nobelPrizeData;
-        this.initVis();
+        this.commonData = _commonData
+        this.nobelPrizeData = _nobelPrizeData
+        this.initVis()
     };
 
     initVis() {
         let vis = this
 
         // Set margins.
-        vis.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right;
-        vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom;
+        vis.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right
+        vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom
 
         vis.svg = d3.select(vis.config.parentElement)
             .append('svg')
             .attr('width', vis.config.containerWidth)
-            .attr('height', vis.config.containerHeight);
+            .attr('height', vis.config.containerHeight)
 
         vis.svg.append('text')
-            .attr('dx', vis.width / 2)
-            .attr('dy', 20)
-            .text('Winners in [Country Name]');
+            .attr('x', vis.config.containerWidth / 4)
+            .attr('y', 20)
+            .text('Winners in [Country Name]')
 
         vis.ddMap = vis.svg.append('g')
-            .attr('transform', `translate(${vis.config.margin.left}, ${vis.config.margin.top})`);
+            .attr('transform', `translate(${vis.config.margin.left}, ${vis.config.margin.top})`)
 
         // Initialize projection and path generator.
         vis.projection = d3.geoMercator()    // Easiest to point at small countries with cursor.
-            .center([2, 47])
-            .scale([vis.width / (2 * Math.PI)])
-            .translate([vis.width / 2, vis.height / 2])
-        vis.geoPath = d3.geoPath().projection(vis.projection);
+            // .center([2, 47])
+            .scale(1)
+            .translate([0, 0])
+            .precision(0)
+        vis.geoPath = d3.geoPath().projection(vis.projection)
 
-        vis.updateVis();
+        vis.updateVis()
     }
 
     updateVis() {
         let vis = this;
 
-        vis.renderVis();
-        vis.renderLegend();
+        vis.renderVis()
+        vis.renderLegend()
     }
 
     renderVis() {
-        let vis = this;
+        let vis = this
 
         // Convert TopoJson -> GeoJson.
-        const country = topojson.feature(vis.commonData, vis.commonData.objects.countries);
-        country.features = country.features.filter(d => d.properties.name === 'Canada')    // Replace 'Canada' with selected country.
-        console.log(country.features)
-        vis.projection.fitSize([vis.width, vis.height], country);
+        const country = topojson.feature(vis.commonData, vis.commonData.objects.countries)
+        country.features = country.features.filter(d => d.properties.name === 'Russia')    // Replace 'Canada' with selected country.
+        console.log(country.features[0])
+
+        let bounds = vis.geoPath.bounds(country.features)
+        let scale = 0.95 / Math.max((bounds[1][0] - bounds[0][0]) / vis.config.containerWidth,
+            (bounds[1][1] - bounds[0][1]) / vis.config.containerHeight)
+        let translate = [(vis.config.containerWidth - scale * (bounds[1][0] + bounds[0][0])) / 2,
+            (vis.config.containerHeight - scale * (bounds[1][1] + bounds[0][1])) / 2]
+
+        vis.projection = d3.geoMercator()
+            .scale(scale)
+            .translate(translate)
+        const path = vis.geoPath.projection(vis.projection)
+        console.log(vis.geoPath)
+        vis.projection.fitSize([vis.width, vis.height], country) // TODO: Uncomment this and country renders.
 
         let countryPath = vis.ddMap.selectAll('path')
             .data(country.features)
             .join('path')
             .attr('class', 'country')
-            .attr('d', vis.geoPath)
+            .attr('d', path)
             .attr('fill', 'white')
             .attr('stroke', 'black')
             .attr('stroke-width', 1)
     }
 
     renderLegend() {
-        let vis = this;
+        let vis = this
 
 
     }

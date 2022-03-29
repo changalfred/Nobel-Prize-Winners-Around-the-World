@@ -182,8 +182,8 @@ Promise.all([
 
     const prizeWorldMap = new DotDensityMap({
         parentElement: '#vis-container-dot-density-map',
-        containerWidth: 400,
-        containerHeight: 400
+        containerWidth: 600,
+        containerHeight: 600
     }, commonData, nobelPrizeData)
 
     prizeWorldMap.updateVis()
