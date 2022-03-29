@@ -1,43 +1,47 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="UTF-8">
-    <title>Nobel Prize Laureates From 1975 - 2019</title>
+    <title>Nobel Prize Laureates From 1901 - 2019</title>
     <link rel="icon" href="data:;base64,iVBORwOKGO=" />
     <link rel="stylesheet" href="/css/style.css">
 </head>
-
 <body>
     <div class="flexbox-container">
-        <h1 class="title">Nobel Prize Laureates From 1975 - 2019</h1>
+        <h1 class="title">Nobel Prize Laureates From 1901 - 2019</h1>
     </div>
     <div class="flexbox-container">
         <!-- Geographical Map Goes Here -->
         <div class="flexbox-item flexbox-item-1">
-            <!-- dummy image -->
-            <img src="https://dummyimage.com/16:9x1080" alt="alternatetext">
+          <h2>Distribution of Winners By Country</h2>
+            <div class="vis" id="vis-container-map"></div>
+            <div id="map-legend"></div>
+            <div id="map-tooltip"></div>
         </div>
     </div>
+  
     <div class="flexbox-container">
         <!-- Treemap Goes Here -->
         <div class="flexbox-item flexbox-item-2">
-            <h1>Universities with most Nobel Prize Laureates</h1>
+            <h2>Universities with Most Nobel Prize Laureates</h2>
             <div><svg id="treemap"></svg></div>
             <div id="treemapTooltip"></div>
         </div>
 
         <!-- Barchart Goes Here -->
         <div class="flexbox-item flexbox-item-3">
-            <h1>Variation in Prize Amount per Category</h1>
+            <h2>Variation in Prize Amount per Category</h2>
             <div id="vis-prize-per-category"></div>
         </div>
     </div>
 
     <script src="js/d3.v6.min.js"></script>
+    <script src="js/topojson.v3.js"></script>
+    <script src="js/d3-legend.min.js"></script>
+    <script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/worldMap.js"></script>
     <script src="js/treemap.js"></script>
     <script src="js/barChart.js"></script>
-    <script src="js/main.js"></script>
 </body>
-
 </html>
