@@ -180,8 +180,8 @@ Promise.all([
   
     const densityMap = new DotDensityMap({
         parentElement: '#vis-container-dot-density-map',
-        containerWidth: 600,
-        containerHeight: 600
+        containerWidth: 400,
+        containerHeight: 400
     }, commonData, nobelPrizeData)
     densityMap.updateVis()
 
