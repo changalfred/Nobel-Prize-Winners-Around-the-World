@@ -83,7 +83,16 @@ class NobelPrizeWorldMap {
         vis.countryPath = vis.map.selectAll('.country')
             .data(countries.features)
             .join('path')
-            .attr('class', 'country')
+            .attr('class', function (d) {
+                // d => 'country ' + d.winnerCount
+                let count = d.winnerCount
+
+                if (count === 0) {
+                    return 'country bin-1'
+                } else if (count >= 1 && count <=20) {
+
+                }
+            })
             .attr('d', vis.geoPath)
             .attr('stroke', 'black')
             .attr('stroke-width', 0.5)
@@ -178,25 +187,26 @@ class NobelPrizeWorldMap {
 
                 if (count === '<1') {
                     console.log(countries)
-                    d3.selectAll('.country')
-                        .style('opacity', 0.5);
-
-                    let item = countries.features
-                    for (let i = 0; i < item.length; i++) {
-                        console.log('Properties: ', item[i])
-                        if (item[i].properties.winnerCount === 0) {
-                            // const match = item[i].classed('match-legend-bin')
-                            let countryId = item[i].id
-                            countryWinnerCountBins.push(countryId)
-                            // vis.countryPath     // Take only relevant country paths.
-                            //     .style('stroke-width', 1.5)
-                            //     .style('opacity', 1)
-                        }
-                    }
-
-                    d3.selectAll('.match-legend-bin')
-                        .style('stroke-width', 1.5)
+                    d3.selectAll('.country .bin-1')
                         .style('opacity', 1)
+                        .style('stroke-width', 1.5)
+
+                    // let item = countries.features
+                    // for (let i = 0; i < item.length; i++) {
+                    //     console.log('Properties: ', item[i])
+                    //     if (item[i].properties.winnerCount === 0) {
+                    //         // const match = item[i].classed('match-legend-bin')
+                    //         let countryId = item[i].id
+                    //         countryWinnerCountBins.push(countryId)
+                    //         // vis.countryPath     // Take only relevant country paths.
+                    //         //     .style('stroke-width', 1.5)
+                    //         //     .style('opacity', 1)
+                    //     }
+                    // }
+
+                    // d3.selectAll('.match-legend-bin')
+                    //     .style('stroke-width', 1.5)
+                    //     .style('opacity', 1)
                 } else if (count === '1 - 25') {
 
                 } else if (count === '26 - 50') {
