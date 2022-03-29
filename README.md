@@ -27,3 +27,5 @@ https://observablehq.com/@d3/zoom-to-bounding-box?collection=@d3/d3-zoom: Variou
 http://bl.ocks.org/mstanaland/6106487: Format numbers to whole numbers.
 
 https://stackoverflow.com/questions/10024866/remove-object-from-array-using-javascript: Remove object from an array of objects.
+
+https://www.carlosrendon.me/unfinished_d3_book/axes.html: Format x-axis ticks with dollar sign. 

@@ -1,14 +1,13 @@
 const parseDate = d3.timeParse('%Y-%m-%d')
 
+const treemapDispatcher = d3.dispatch('treemapFilter');
+
 function convertField(csvData, from, to) {
     for (let i = 0; i < csvData.length; i++) {
         if (csvData[i].birth_countryNow === from) {
             csvData[i].birth_countryNow = to
         }
     }
-
-    return csvData
-}
 
 // Roll up data here.
 function rollupData(csvData) {
@@ -158,6 +157,7 @@ Promise.all([
         d.dateAwarded = parseDate(d.dateAwarded)
         d.birth_date = parseDate(d.birth_date)
         d.death_date = parseDate(d.death_date)
+        d.affiliation_1 = d.affiliation_1.split(",");
     })
 
     // Manipulate data.
@@ -174,6 +174,15 @@ Promise.all([
         containerWidth: 1000,
         containerHeight: 800
     }, commonData, nobelPrizeData)
-
     prizeWorldMap.updateVis()
+  
+    const treemap = new Treemap({
+        parentElement: '#treemap',
+    }, treemapDispatcher, nobelPrizeData);
+    treemap.updateVis();
+
+    const bar_chart = new BarChart({
+        parentElement: '#vis-prize-per-category',
+    }, nobelPrizeData);
+    bar_chart.updateVis();
 })
