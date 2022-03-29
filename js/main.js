@@ -8,6 +8,7 @@ function convertField(csvData, from, to) {
             csvData[i].birth_countryNow = to
         }
     }
+}
 
 // Roll up data here.
 function rollupData(csvData) {
@@ -167,17 +168,19 @@ Promise.all([
     let minMaxData = minMax(groupData(nobelPrizeData))
     let commonData = joinData(geoData, rolledData, minMaxData)
 
-    // console.log('Common data: ', commonData)
+    console.log('Common data: ', commonData)
 
     const prizeWorldMap = new NobelPrizeWorldMap({
         parentElement: '#vis-container-map',
         containerWidth: 1000,
-        containerHeight: 800
+        containerHeight: 500
     }, commonData, nobelPrizeData)
     prizeWorldMap.updateVis()
-  
+
     const treemap = new Treemap({
         parentElement: '#treemap',
+        containerWidth: 500,
+        containerHeight: 500
     }, treemapDispatcher, nobelPrizeData);
     treemap.updateVis();
 

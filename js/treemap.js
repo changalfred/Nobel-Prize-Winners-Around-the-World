@@ -15,6 +15,9 @@ class Treemap {
 
     initVis() {
         let vis = this;
+
+        console.log('Tree data: ', vis.data)
+
         vis.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right;
         vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom;
 
@@ -30,14 +33,14 @@ class Treemap {
         vis.chart = vis.svg.append('g')
             .attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top})`);
 
-        var temp1 = d3.rollup(vis.data, v => v.length, d => d.affiliation_1[0]);
+        let temp1 = d3.rollup(vis.data, v => v.length, d => d.affiliation_1[0]);
         const temp2 = new Map([...temp1.entries()].sort((a, b) => b[1] - a[1]));
         temp2.delete('');
 
         const awardsPerAffiliation = Array.from(temp2, function (item) {
             return { university: item[0], parent: 'origin', awardCount: item[1] }
         });
-        var awardsPerAffiliationTopTen = awardsPerAffiliation.slice(0, 10);
+        let awardsPerAffiliationTopTen = awardsPerAffiliation.slice(0, 10);
         awardsPerAffiliationTopTen.push({ university: 'origin', parent: '', awardCount: '' });
 
         console.log(awardsPerAffiliation);

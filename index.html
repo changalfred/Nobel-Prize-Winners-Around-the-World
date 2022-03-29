@@ -6,20 +6,6 @@
     <link rel="icon" href="data:;base64,iVBORwOKGO=" />
     <link rel="stylesheet" href="/css/style.css">
 </head>
-
-<body>
-    <h1>Nobel Prize Laureates From 1901 - 2019</h1>
-
-    <div class="vis" id="vis-container-map"></div>
-    <div id="map-legend"></div>
-    <div id="map-tooltip"></div>
-
-    <script src="js/topojson.v3.js"></script>
-    <script src="js/d3-legend.min.js"></script>
-    <script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
-    <script src="js/main.js"></script>
-    <script src="js/worldMap.js"></script>
-
 <body>
     <div class="flexbox-container">
         <h1 class="title">Nobel Prize Laureates From 1901 - 2019</h1>
@@ -27,7 +13,7 @@
     <div class="flexbox-container">
         <!-- Geographical Map Goes Here -->
         <div class="flexbox-item flexbox-item-1">
-          <h1>Nobel Laureates Around the World</h1>
+          <h2>Distribution of Winners By Country</h2>
             <div class="vis" id="vis-container-map"></div>
             <div id="map-legend"></div>
             <div id="map-tooltip"></div>
@@ -37,14 +23,14 @@
     <div class="flexbox-container">
         <!-- Treemap Goes Here -->
         <div class="flexbox-item flexbox-item-2">
-            <h1>Universities with Most Nobel Prize Laureates</h1>
+            <h2>Universities with Most Nobel Prize Laureates</h2>
             <div><svg id="treemap"></svg></div>
             <div id="treemapTooltip"></div>
         </div>
 
         <!-- Barchart Goes Here -->
         <div class="flexbox-item flexbox-item-3">
-            <h1>Variation in Prize Amount per Category</h1>
+            <h2>Variation in Prize Amount per Category</h2>
             <div id="vis-prize-per-category"></div>
         </div>
     </div>
@@ -53,9 +39,9 @@
     <script src="js/topojson.v3.js"></script>
     <script src="js/d3-legend.min.js"></script>
     <script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
+    <script src="js/main.js"></script>
     <script src="js/worldMap.js"></script>
     <script src="js/treemap.js"></script>
     <script src="js/barChart.js"></script>
-    <script src="js/main.js"></script>
 </body>
 </html>

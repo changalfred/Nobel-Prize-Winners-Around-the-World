@@ -29,9 +29,6 @@ class NobelPrizeWorldMap {
             .attr('width', vis.config.containerWidth)
             .attr('height', vis.config.containerHeight);
 
-        vis.svg.append('text')
-            .text('Distribution of Winners By Country');
-
         vis.map = vis.svg.append('g')
             .attr('transform', `translate(${vis.config.margin.left}, ${vis.config.margin.top})`);
 
@@ -43,7 +40,6 @@ class NobelPrizeWorldMap {
 
         vis.colorScale = d3.scaleThreshold()
             .range(d3.schemeYlGn[6]);
-        console.log(vis.colorScale.range())
 
         // Annotation.
         vis.annotations = [{
@@ -54,7 +50,7 @@ class NobelPrizeWorldMap {
             connector: { end: 'dot' },
             color: ['#cc0000'],
             x: 277,
-            y: 320,
+            y: 170,
             dx: 10,
             dy: 10
         }];
@@ -157,14 +153,14 @@ class NobelPrizeWorldMap {
 
         vis.legendLinear = vis.map.append('g')
             .attr('class', 'legend-threshold')
-            .attr('transform', `translate(${vis.config.legendMarginLeft}, ${vis.config.legendMarginTop})`)
+            .attr('transform', `translate(${vis.config.legendMarginLeft}, 275)`)
 
         // TODO: Uncomment this and show view and web example.
-        vis.legendLinear.selectAll('rect')
-            .each(function (d, i, nodes) {
-                console.log('d, i, nodes', d, i, nodes)
-                nodes[i].classList.add(vis.colorScale(d))
-            })
+        // vis.legendLinear.selectAll('rect')
+        //     .each(function (d, i, nodes) {
+        //         console.log('d, i, nodes', d, i, nodes)
+        //         nodes[i].classList.add(vis.colorScale(d))
+        //     })
 
         vis.legendLinear = d3.legendColor().shapeWidth(40)
             .orient('vertical')
