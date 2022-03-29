@@ -1,10 +1,9 @@
 const parseDate = d3.timeParse('%Y-%m-%d')
 
-// Ensure fields match values in json data.
-function changeField(csvData) {
+function convertField(csvData, from, to) {
     for (let i = 0; i < csvData.length; i++) {
-        if (csvData[i].birth_countryNow === 'USA') {
-            csvData[i].birth_countryNow = 'United States of America'
+        if (csvData[i].birth_countryNow === from) {
+            csvData[i].birth_countryNow = to
         }
     }
 
@@ -20,7 +19,7 @@ function rollupData(csvData) {
     data.push(rollupWinnersPerCountry)
 
     // Data stores total prize per country for tooltip in map.
-    let rollupPrizePerCountry = d3.rollups(csvData, v => d3.sum(v, d => d.prizeAmountAdjusted), d => d.birth_countryNow)
+    let rollupPrizePerCountry = d3.rollups(csvData, v => d3.sum(v, v => v.prizeAmountAdjusted), d => d.birth_countryNow)
     data.push(rollupPrizePerCountry)
 
     return data
@@ -31,15 +30,13 @@ function groupData(csvData) {
     return d3.groups(csvData, d => d.birth_countryNow)
 }
 
-// Find min and max of data.
-// TODO: Clean up this function.
-function minMax(data) {
+function minMax(csvData) {
     let minMax = []
     let minItemByCountry = []
     let maxItemByCountry = []
 
-    for (let i = 0; i < data.length; i++) {
-        let item = data[i][1]
+    for (let i = 0; i < csvData.length; i++) {
+        let item = csvData[i][1]
         let minItem = item[0]
 
         for (let j = 0; j < item.length; j++) {
@@ -47,8 +44,7 @@ function minMax(data) {
 
             // Find min.
             if (item[j].prizeAmountAdjusted < minItem.prizeAmountAdjusted) {
-                min = item[j]       // item[j] must be of type array because later iterations do not compare, since minItem[1] is not an array but an array of object.
-                                    // This means only the first item of each country is pushed to return result.
+                min = item[j]
                 minItem = min
             }
         }
@@ -56,8 +52,8 @@ function minMax(data) {
         minItemByCountry.push(minItem)
     }
 
-    for (let i = 0; i < data.length; i++) {
-        let item = data[i][1]
+    for (let i = 0; i < csvData.length; i++) {
+        let item = csvData[i][1]
         let maxItem = item[0]
 
         for (let j = 0; j < item.length; j++) {
@@ -79,34 +75,14 @@ function minMax(data) {
     return minMax
 }
 
-// Filter data here.
-function filterData(rolledUpData) {
-    let max = []
-
-    // Find country with most winners.
-    let maxWinnerCountry = ['', 0]
-    for (let i = 0; i < rolledUpData[0].length; i++) {
-        let rolledUpItem = rolledUpData[0][i]
-
-        if (rolledUpItem[1] > maxWinnerCountry[1]) {
-            maxWinnerCountry = rolledUpItem
-        }
-    }
-    max.push(maxWinnerCountry)
-
-    return max
-}
-
-function filterAntarctica(data) {
-    let mapItems = data.objects.countries.geometries
+function filterData(mapData, key) {
+    let mapItems = mapData.objects.countries.geometries
 
     for (let i = 0; i < mapItems.length; i++) {
-        if (mapItems[i].properties.name === 'Antarctica') {
+        if (mapItems[i].properties.name === key) {
             mapItems.splice(i, 1)
         }
     }
-
-    return data
 }
 
 // Join data here.
@@ -184,12 +160,12 @@ Promise.all([
         d.death_date = parseDate(d.death_date)
     })
 
-    let abbreviationToFullData = changeField(nobelPrizeData)
-    let rolledUpData = rollupData(abbreviationToFullData)
-    let winningestCountryData = filterData(rolledUpData)     // Contains country with max winners.
-    let minMaxWinnersPerCountryData = minMax(groupData(nobelPrizeData))    // Contains winners of each country.
-    let remAtaGeoData = filterAntarctica(geoData)
-    let commonData = joinData(geoData, rolledUpData, minMaxWinnersPerCountryData)
+    // Manipulate data.
+    convertField(nobelPrizeData, 'USA', 'United States of America')
+    filterData(geoData, 'Antarctica')
+    let rolledData = rollupData(nobelPrizeData)
+    let minMaxData = minMax(groupData(nobelPrizeData))
+    let commonData = joinData(geoData, rolledData, minMaxData)
 
     // console.log('Common data: ', commonData)
 
@@ -197,7 +173,7 @@ Promise.all([
         parentElement: '#vis-container-map',
         containerWidth: 1000,
         containerHeight: 800
-    }, commonData, winningestCountryData, minMaxWinnersPerCountryData, nobelPrizeData)
+    }, commonData, nobelPrizeData)
 
     prizeWorldMap.updateVis()
 })

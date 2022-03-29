@@ -1,5 +1,5 @@
 class NobelPrizeWorldMap {
-    constructor(_config, _commonData, _winningestCountryData, _minMaxWinnersPerCountryData, _nobelPrizeData) {
+    constructor(_config, _commonData, _nobelPrizeData) {
         this.config = {
             parentElement: _config.parentElement,
             containerWidth: _config.containerWidth,
@@ -13,8 +13,6 @@ class NobelPrizeWorldMap {
         }
 
         this.commonData = _commonData;
-        this.winningestCountryData = _winningestCountryData;
-        this.minMaxWinnersPerCountryData = _minMaxWinnersPerCountryData;
         this.nobelPrizeData = _nobelPrizeData;
         this.initVis();
     };
@@ -38,7 +36,7 @@ class NobelPrizeWorldMap {
             .attr('transform', `translate(${vis.config.margin.left}, ${vis.config.margin.top})`);
 
         // Initialize projection and path generator.
-        vis.projection = d3.geoEquirectangular()    // Easiest to point at small countries with cursor.
+        vis.projection = d3.geoEquirectangular()
             .scale([vis.width / (2 * Math.PI)])
             .translate([vis.width / 2, vis.height / 2])
         vis.geoPath = d3.geoPath().projection(vis.projection);
@@ -82,9 +80,6 @@ class NobelPrizeWorldMap {
 
         // Convert TopoJson -> GeoJson.
         const countries = topojson.feature(vis.commonData, vis.commonData.objects.countries);
-
-        // Need count of winners per country when binding to determine colour saturation.
-        const countWinnerByCountryData = d3.rollups(vis.nobelPrizeData, v => v.length, d => d.birth_countryNow);
 
         // Scale projection so geometry fits in svg area.
         vis.projection.fitSize([vis.width, vis.height], countries);
@@ -146,29 +141,7 @@ class NobelPrizeWorldMap {
             .on('dblclick', function (event, d) {
                 // Innovative view.
                 if (d.properties.winnerCount > 0) {
-                    const zoom = d3.zoom()
-                        .scaleExtent([1, 30])
-                        .on('zoom', function (event) {
-                            const {transform} = event;
-                            vis.map.attr("transform", transform);
 
-                            // 1. Scale in entirely on first double click (all zoom functions allowed).
-
-                            // 2. Show dot density map everywhere once scaled in (all zoom functions allowed).
-
-                            // 3. When click on a dot, separate country from all of map. Show
-                            // individual stats on right (see drawing). No zoom functions allowed.
-
-                            // 4. Clicking anywhere outside a dot returns to scaled dot density map (same as 2.).
-
-                            // 5. Double click again to return to original view of all views.
-                        })
-
-                    vis.svg.call(zoom)
-                        .on('wheel.zoom', null);
-                        // .on('mousedown.zoom', null)
-                        // .on('touchmove.zoom', null)
-                        // .on('touchstart.zoom', null)
                 }
             })
 
@@ -187,11 +160,11 @@ class NobelPrizeWorldMap {
             .attr('transform', `translate(${vis.config.legendMarginLeft}, ${vis.config.legendMarginTop})`)
 
         // TODO: Uncomment this and show view and web example.
-        // vis.legendLinear.selectAll('rect')
-        //     .each(function (d, i, nodes) {
-        //         console.log('d, i, nodes', d, i, nodes)
-        //         nodes[i].classList.add(vis.colorScale(d))
-        //     })
+        vis.legendLinear.selectAll('rect')
+            .each(function (d, i, nodes) {
+                console.log('d, i, nodes', d, i, nodes)
+                nodes[i].classList.add(vis.colorScale(d))
+            })
 
         vis.legendLinear = d3.legendColor().shapeWidth(40)
             .orient('vertical')
@@ -218,7 +191,7 @@ class NobelPrizeWorldMap {
                         if (item[i].properties.winnerCount === 0) {
                             // const match = item[i].classed('match-legend-bin')
                             let countryId = item[i].id
-                            countryIds.push(countryId)
+                            countryWinnerCountBins.push(countryId)
                             // vis.countryPath     // Take only relevant country paths.
                             //     .style('stroke-width', 1.5)
                             //     .style('opacity', 1)
