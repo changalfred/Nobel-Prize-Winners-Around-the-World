@@ -55,8 +55,8 @@ class NobelPrizeWorldMap {
             className: 'anomaly',
             connector: { end: 'dot' },
             color: ['#cc0000'],
-            x: 280,
-            y: 270,
+            x: 277,
+            y: 320,
             dx: 10,
             dy: 10
         }];
