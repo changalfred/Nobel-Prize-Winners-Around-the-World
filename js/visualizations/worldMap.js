@@ -84,13 +84,23 @@ class NobelPrizeWorldMap {
             .data(countries.features)
             .join('path')
             .attr('class', function (d) {
-                // d => 'country ' + d.winnerCount
-                let count = d.winnerCount
+                console.log(d)
+                let count = d.properties.winnerCount
 
+                // Count matches the legend bin labels.
                 if (count === 0) {
                     return 'country bin-1'
-                } else if (count >= 1 && count <=20) {
-
+                } else if (count >= 1 && count <= 25) {
+                    return 'country bin-2'
+                } else if (count >= 26 && count <= 50) {
+                    return 'country bin-3'
+                } else if (count >= 51 && count <= 75) {
+                    return 'country bin-4'
+                } else if (count >= 76 && count <= 100) {
+                    return 'country bin-5'
+                } else {
+                    // Count is at least 100.
+                    return 'country bin-6'
                 }
             })
             .attr('d', vis.geoPath)
@@ -146,7 +156,7 @@ class NobelPrizeWorldMap {
             .on('dblclick', function (event, d) {
                 // Innovative view.
                 if (d.properties.winnerCount > 0) {
-
+                    // Add interaction here.
                 }
             })
 
@@ -164,13 +174,6 @@ class NobelPrizeWorldMap {
             .attr('class', 'legend-threshold')
             .attr('transform', `translate(${vis.config.legendMarginLeft}, 275)`)
 
-        // TODO: Uncomment this and show view and web example.
-        // vis.legendLinear.selectAll('rect')
-        //     .each(function (d, i, nodes) {
-        //         console.log('d, i, nodes', d, i, nodes)
-        //         nodes[i].classList.add(vis.colorScale(d))
-        //     })
-
         vis.legendLinear = d3.legendColor().shapeWidth(40)
             .orient('vertical')
             .title('Winner Count')
@@ -178,59 +181,41 @@ class NobelPrizeWorldMap {
             .labels(['<1', '1 - 25', '26 - 50', '51 - 75', '76 - 100', '>100'])
             .labelFormat(d3.format(','))
             .scale(vis.colorScale)
-            // .classPrefix(i => `${i}-`)
-            // .useClass(true)  // TODO: Uncomment this and show view and web example.
-            .on('cellover', function (d, i, event) {
-                const countries = topojson.feature(vis.commonData, vis.commonData.objects.countries);
-                let countryWinnerCountBins = []
+            .on('cellover', function () {
                 let count = d3.select(this)._groups[0][0].textContent
 
+                d3.selectAll('.country')
+                    .style('opacity', 0.5)
                 if (count === '<1') {
-                    console.log(countries)
-                    d3.selectAll('.country .bin-1')
+                    d3.selectAll('.bin-1')
                         .style('opacity', 1)
                         .style('stroke-width', 1.5)
-
-                    // let item = countries.features
-                    // for (let i = 0; i < item.length; i++) {
-                    //     console.log('Properties: ', item[i])
-                    //     if (item[i].properties.winnerCount === 0) {
-                    //         // const match = item[i].classed('match-legend-bin')
-                    //         let countryId = item[i].id
-                    //         countryWinnerCountBins.push(countryId)
-                    //         // vis.countryPath     // Take only relevant country paths.
-                    //         //     .style('stroke-width', 1.5)
-                    //         //     .style('opacity', 1)
-                    //     }
-                    // }
-
-                    // d3.selectAll('.match-legend-bin')
-                    //     .style('stroke-width', 1.5)
-                    //     .style('opacity', 1)
                 } else if (count === '1 - 25') {
-
+                    d3.selectAll('.bin-2')
+                        .style('opacity', 1)
+                        .style('stroke-width', 1.5)
                 } else if (count === '26 - 50') {
-
+                    d3.selectAll('.bin-3')
+                        .style('opacity', 1)
+                        .style('stroke-width', 1.5)
                 } else if (count === '51 - 75') {
-
+                    d3.selectAll('.bin-4')
+                        .style('opacity', 1)
+                        .style('stroke-width', 1.5)
                 } else if (count === '76 - 100') {
-
+                    d3.selectAll('.bin-5')
+                        .style('opacity', 1)
+                        .style('stroke-width', 1.5)
                 } else {
-
+                    d3.selectAll('.bin-6')
+                        .style('opacity', 1)
+                        .style('stroke-width', 1.5)
                 }
-
-                d3.selectAll('.country')
-                    .style('stroke-width', 1.5)
-                    .style('opacity', 1)
             })
-            .on('cellout', function (d, event) {
-                console.log('Cell out.')
+            .on('cellout', function () {
                 d3.selectAll('.country')
                     .style('opacity', 1)
                     .style('stroke-width', 0.5)
-
-                // d3.select(this)
-                //     .style('stroke-width', 0.5);
             })
 
         vis.map.select('.legend-threshold')

@@ -61,7 +61,7 @@
         // Convert TopoJson -> GeoJson.
         const country = topojson.feature(vis.commonData, vis.commonData.objects.countries)
         country.features = country.features.filter(d => d.properties.name === 'Russia')    // Replace 'Canada' with selected country.
-        console.log(country.features[0])
+        // console.log(country.features[0])
 
         let bounds = vis.geoPath.bounds(country.features)
         let scale = 0.95 / Math.max((bounds[1][0] - bounds[0][0]) / vis.config.containerWidth,
