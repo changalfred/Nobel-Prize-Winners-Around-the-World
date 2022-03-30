@@ -156,7 +156,7 @@ class NobelPrizeWorldMap {
             .on('dblclick', function (event, d) {
                 // Innovative view.
                 if (d.properties.winnerCount > 0) {
-
+                    // Add interaction here.
                 }
             })
 
@@ -181,9 +181,7 @@ class NobelPrizeWorldMap {
             .labels(['<1', '1 - 25', '26 - 50', '51 - 75', '76 - 100', '>100'])
             .labelFormat(d3.format(','))
             .scale(vis.colorScale)
-            // .classPrefix(i => `${i}-`)
-            // .useClass(true)  // TODO: Uncomment this and show view and web example.
-            .on('cellover', function (d, i, event) {
+            .on('cellover', function () {
                 let count = d3.select(this)._groups[0][0].textContent
 
                 d3.selectAll('.country')
@@ -214,7 +212,7 @@ class NobelPrizeWorldMap {
                         .style('stroke-width', 1.5)
                 }
             })
-            .on('cellout', function (d, event) {
+            .on('cellout', function () {
                 d3.selectAll('.country')
                     .style('opacity', 1)
                     .style('stroke-width', 0.5)
