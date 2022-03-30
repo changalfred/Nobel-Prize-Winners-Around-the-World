@@ -2,6 +2,7 @@ const parseDate = d3.timeParse('%Y-%m-%d')
 
 const treemapDispatcher = d3.dispatch('treemapFilter');
 
+// START EXTRACTION HERE. //
 function convertField(csvData, from, to) {
     for (let i = 0; i < csvData.length; i++) {
         if (csvData[i].birth_countryNow === from) {
@@ -143,6 +144,7 @@ function joinData(topoMap, csvData, minMaxWinnersPerCountryData) {
 
     return topoMap
 }
+// END EXTRACTION HERE. //
 
 // Main function.
 Promise.all([
