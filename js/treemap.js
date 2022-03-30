@@ -16,7 +16,7 @@ class Treemap {
     initVis() {
         let vis = this;
 
-        console.log('Tree data: ', vis.data)
+        // console.log('Tree data: ', vis.data)
 
         vis.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right;
         vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom;
@@ -43,7 +43,7 @@ class Treemap {
         let awardsPerAffiliationTopTen = awardsPerAffiliation.slice(0, 10);
         awardsPerAffiliationTopTen.push({ university: 'origin', parent: '', awardCount: '' });
 
-        console.log(awardsPerAffiliation);
+        // console.log(awardsPerAffiliation);
 
         // data processing:
         vis.data = d3.stratify()
@@ -64,7 +64,7 @@ class Treemap {
 
         vis.renderVis();
 
-        console.log(vis.data.leaves());
+        // console.log(vis.data.leaves());
     }
 
     renderVis() {
