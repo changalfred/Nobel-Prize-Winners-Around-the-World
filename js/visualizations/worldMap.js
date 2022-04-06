@@ -152,7 +152,12 @@ class NobelPrizeWorldMap {
                     .style('stroke-width', 0.5);
             })
             .on('click', function (event, d) {
+                const isActive = d3.select(this).classed('active')
+                d3.select(this).classed('active', !isActive)
 
+                const selectedCountry = vis.map.select('.country').data()
+
+                vis.dispatcher.call('filterCountry', event, selectedCountry)
             })
             .on('dblclick', function (event, d) {
                 // Innovative view.
