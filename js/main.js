@@ -2,6 +2,11 @@ const parseDate = d3.timeParse('%Y-%m-%d')
 
 const treemapDispatcher = d3.dispatch('treemapFilter');
 
+// filteredCategories: select a category on bar chart to filter countries that have
+// winners belonging to category (can have multiple categories).
+// filteredCountry: select a country to show prize winnings of each category in that country.
+const worldMapBarChartDispatcher = d3.dispatch('filteredCategories', 'filteredCountry')
+
 // Main function.
 Promise.all([
     d3.json('data/countries-110m.json'),
@@ -33,7 +38,7 @@ Promise.all([
         parentElement: '#vis-container-map',
         containerWidth: 1000,
         containerHeight: 500
-    }, commonData, nobelPrizeData)
+    }, commonData, nobelPrizeData, worldMapBarChartDispatcher)
     prizeWorldMap.updateVis()
 
     const densityMap = new DotDensityMap({

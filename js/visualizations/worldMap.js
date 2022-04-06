@@ -1,5 +1,5 @@
 class NobelPrizeWorldMap {
-    constructor(_config, _commonData, _nobelPrizeData) {
+    constructor(_config, _commonData, _nobelPrizeData, _dispatcher) {
         this.config = {
             parentElement: _config.parentElement,
             containerWidth: _config.containerWidth,
@@ -14,6 +14,7 @@ class NobelPrizeWorldMap {
 
         this.commonData = _commonData;
         this.nobelPrizeData = _nobelPrizeData;
+        this.dispatcher = _dispatcher
         this.initVis();
     };
 
