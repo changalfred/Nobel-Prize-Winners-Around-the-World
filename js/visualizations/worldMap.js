@@ -85,7 +85,6 @@ class NobelPrizeWorldMap {
             .data(countries.features)
             .join('path')
             .attr('class', function (d) {
-                console.log(d)
                 let count = d.properties.winnerCount
 
                 // Count matches the legend bin labels.
@@ -148,14 +147,23 @@ class NobelPrizeWorldMap {
                 d3.select('#map-tooltip')
                     .style('display', 'none');
 
-                d3.select(this)
-                    .style('stroke-width', 0.5);
+                // Ensure cursor leaving active country does not change stroke width.
+                if (!d3.select(this).classed('active')) {
+                    d3.select(this)
+                        .style('stroke-width', 0.5);
+                }
             })
             .on('click', function (event, d) {
+                // Deactivate all previously selected countries.
+                d3.selectAll('.country')
+                    .attr('stroke-width', 0.5)
+
                 const isActive = d3.select(this).classed('active')
                 d3.select(this).classed('active', !isActive)
+                    .attr('stroke-width', 1.5)
 
-                const selectedCountry = vis.map.select('.country').data()
+                const selectedCountry = d.properties.name
+                console.log(selectedCountry)
 
                 vis.dispatcher.call('filterCountry', event, selectedCountry)
             })

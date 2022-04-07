@@ -30,7 +30,7 @@ Promise.all([
 
     // Manipulate data.
     convertField(nobelPrizeData, 'USA', 'United States of America')
-    filterData(geoData, 'Antarctica')
+    filterMapData(geoData, 'Antarctica')
     let rolledData = rollupData(nobelPrizeData)
     let minMaxData = minMax(groupData(nobelPrizeData))
     commonData = joinData(geoData, rolledData, minMaxData)
@@ -60,22 +60,27 @@ Promise.all([
 
     barChart = new BarChart({
         parentElement: '#vis-prize-per-category',
-    }, nobelPrizeData);
+    }, nobelPrizeData, worldMapBarChartDispatcher);
     barChart.updateVis();
 })
 
 worldMapBarChartDispatcher.on('filterCountry', selectedCountry => {
-    console.log('Selected country: ', selectedCountry)
-
     if (selectedCountry === null) {
         barChart.data = nobelPrizeData
     } else {
         // Filter data to only include data with selected country.
+        barChart.data = filterCsvData(nobelPrizeData, selectedCountry)
     }
+
+    // console.log('Barchart data: ', barChart.data)
 
     barChart.updateVis()
 })
 
 worldMapBarChartDispatcher.on('filterPrizeCategories', selectedPrizeCategories => {
+    if (selectedPrizeCategories.length === 0) {
+        worldMap.commonData = commonData
+    }
 
+    worldMap.updateVis()
 })
