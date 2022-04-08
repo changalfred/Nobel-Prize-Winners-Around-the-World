@@ -27,7 +27,6 @@ Promise.all([
     let minMaxData = minMax(groupData(nobelPrizeData))
     let commonData = joinData(geoData, rolledData, minMaxData)
 
-    console.log('Common data: ', commonData)
 
     const prizeWorldMap = new NobelPrizeWorldMap({
         parentElement: '#vis-container-map',
@@ -54,4 +53,19 @@ Promise.all([
         parentElement: '#vis-prize-per-category',
     }, nobelPrizeData);
     bar_chart.updateVis();
+
+    d3.select(".btn")
+        .on('click', () => {
+            prizeWorldMap.data = nobelPrizeData;
+            prizeWorldMap.updateVis();
+
+            densityMap.data = nobelPrizeData;
+            densityMap.updateVis();
+
+            bar_chart.data = nobelPrizeData;
+            bar_chart.updateVis();
+
+            treemap.data = nobelPrizeData;
+            treemap.updateVis();
+        });
 })
