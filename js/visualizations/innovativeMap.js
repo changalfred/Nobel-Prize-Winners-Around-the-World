@@ -54,10 +54,24 @@ class InnovativeMap {
         let vis = this;
 
         vis.countryFeatures = vis.country.features.filter(d => d.properties.name === 'United States of America')    // Replace 'Canada' with selected country.
-        console.log(vis.countryFeatures)
+        vis.usNobelPrizeData = d3.groups(vis.nobelPrizeData, d => d.birth_countryNow === 'United States of America')
+        vis.bounds = vis.geoPath.bounds(vis.countryFeatures[0])
 
         // Combine data from us-cities.csv and laureates.csv.
-        vis.bounds = vis.geoPath.bounds(vis.countryFeatures[0])
+        // let matchCount = 0
+        let winnersWithLatLon = []
+        for (let i = 0; i < vis.usNobelPrizeData[1][1].length; i++) {
+            let nobelItem = vis.usNobelPrizeData[1][1][i]
+            for (let j = 0; j < vis.usCitiesData.length; j++) {
+                let cityItem = vis.usCitiesData[j]
+                if (cityItem.city === nobelItem.birth_cityNow.substring(0, nobelItem.birth_cityNow.indexOf(','))) {
+                    nobelItem.lat = cityItem.lat
+                    nobelItem.lon = cityItem.lon
+                    winnersWithLatLon.push(nobelItem)
+                }
+            }
+        }
+        console.log('Nobel Item: ', winnersWithLatLon)
 
         vis.renderVis()
         // vis.renderLegend()
@@ -86,6 +100,8 @@ class InnovativeMap {
             .attr('fill', 'white')
             .attr('stroke', 'black')
             .attr('stroke-width', 1)
+
+        // TODO: Plot the cities as points.
     }
 
     renderLegend() {

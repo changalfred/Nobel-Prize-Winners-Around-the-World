@@ -18,7 +18,7 @@ Promise.all([
 ]).then(data => {
     geoData = data[0]
     nobelPrizeData = data[1]
-    let usCitiesData = data[2]
+    const usCitiesData = data[2]
 
     // nobelPrizeData = d3.filter(nobelPrizeData, d => d.birth_countryNow === 'USA')
     // // Check how many matching cities.
@@ -42,7 +42,12 @@ Promise.all([
         d.dateAwarded = parseDate(d.dateAwarded)
         d.birth_date = parseDate(d.birth_date)
         d.death_date = parseDate(d.death_date)
-        d.affiliation_1 = d.affiliation_1.split(",");
+        d.affiliation_1 = d.affiliation_1.split(",")
+    })
+
+    usCitiesData.forEach(d => {
+        d.lat = +d.lat
+        d.lon = +d.lon
     })
 
     // Manipulate data.
