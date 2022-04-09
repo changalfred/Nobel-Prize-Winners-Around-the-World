@@ -42,9 +42,9 @@ class InnovativeMap {
         // Initialize projection and path generator.
         vis.projection = d3.geoAlbers()
             // .center([500, 200])
-            .scale(400)
+            .scale(500)
             // .scale([vis.config.containerWidth / 2, vis.config.containerHeight / 2])
-            .translate([vis.width / 2 - 50, vis.height / 2 + 75])
+            .translate([vis.width / 2 + 50, vis.height / 2 + 75])
         vis.geoPath = d3.geoPath().projection(vis.projection)
 
         vis.updateVis()
@@ -59,7 +59,7 @@ class InnovativeMap {
 
         // Combine data from us-cities.csv and laureates.csv.
         // let matchCount = 0
-        let winnersWithLatLon = []
+        vis.winnersWithLatLon = []
         for (let i = 0; i < vis.usNobelPrizeData[1][1].length; i++) {
             let nobelItem = vis.usNobelPrizeData[1][1][i]
             for (let j = 0; j < vis.usCitiesData.length; j++) {
@@ -67,14 +67,14 @@ class InnovativeMap {
                 if (cityItem.city === nobelItem.birth_cityNow.substring(0, nobelItem.birth_cityNow.indexOf(','))) {
                     nobelItem.lat = cityItem.lat
                     nobelItem.lon = cityItem.lon
-                    winnersWithLatLon.push(nobelItem)
+                    vis.winnersWithLatLon.push(nobelItem)
                 }
             }
         }
-        console.log('Nobel Item: ', winnersWithLatLon)
+        // console.log('Nobel Item: ', vis.winnersWithLatLon)
 
         vis.renderVis()
-        // vis.renderLegend()
+        vis.renderLegend()
     }
 
     renderVis() {
@@ -92,7 +92,7 @@ class InnovativeMap {
         //     .translate([vis.width / 2, vis.height / 2 + 75])
         // const path = vis.geoPath.projection(vis.projection)
 
-        let countryPath = vis.ddMap.selectAll('path')
+        vis.ddMap.selectAll('path')
             .data(vis.countryFeatures)
             .join('path')
             .attr('class', 'country')
@@ -101,32 +101,52 @@ class InnovativeMap {
             .attr('stroke', 'black')
             .attr('stroke-width', 1)
 
-        // TODO: Plot the cities as points.
+        // Plot the cities as points.
+        vis.ddMap.selectAll('.point')
+            .data(vis.usCitiesData)
+            .join('circle')
+            .attr('class', 'point')
+            .attr('transform', function (d) {
+                return `translate(${vis.projection([d.lon, d.lat])})`
+            })
+            // .attr('cx', function (d, i) {
+            //     // console.log('Data: ', d)
+            //     console.log('Lon: ', d)
+            //     return d.lon + 500   // Longitude to determine x position.
+            // })
+            // .attr('cy', function (d, i) {
+            //     // console.log('Data: ', d)
+            //     console.log('Lat: ', d)
+            //     return d.lat    // Latitude to determine y position.
+            // })
+            .attr('r', '3px')
+            .attr('fill', 'green')
+
     }
 
     renderLegend() {
-        // let vis = this
-        //
-        // const keys = ['male', 'female']
-        //
-        // let legendBins = vis.ddMap.selectAll('.legend-bin')
-        //     .data(keys)
-        //
-        // legendBins.join('circle')
-        //     .attr('class', d => `legend-mark gender-${d}`)
-        //     .attr('cx', 20)
-        //     .attr('cy', (d, i) => i * 25)
-        //     .attr('r', vis.config.legendRadius)
-        //     .attr('fill', d => d === 'male' ? 'blue' : 'pink')
-        //
-        // legendBins.join('text')
-        //     .attr('class', d => `legend-label gender-${d}`)
-        //     .attr('x', 35)
-        //     .attr('y', (d, i) => i * 25 + 4)
-        //     .text(d => d)
-        //
-        // legendBins.on('hover', function () {
-        //
-        // })
+        let vis = this
+
+        const keys = ['male', 'female']
+
+        let legendBins = vis.ddMap.selectAll('.legend-bin')
+            .data(keys)
+
+        legendBins.join('circle')
+            .attr('class', d => `legend-mark gender-${d}`)
+            .attr('cx', 20)
+            .attr('cy', (d, i) => i * 25)
+            .attr('r', vis.config.legendRadius)
+            .attr('fill', d => d === 'male' ? 'blue' : 'pink')
+
+        legendBins.join('text')
+            .attr('class', d => `legend-label gender-${d}`)
+            .attr('x', 35)
+            .attr('y', (d, i) => i * 25 + 4)
+            .text(d => d)
+
+        legendBins.on('hover', function () {
+
+        })
     }
 }

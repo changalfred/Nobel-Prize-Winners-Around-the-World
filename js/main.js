@@ -66,12 +66,12 @@ Promise.all([
     }, commonData, nobelPrizeData, worldMapBarChartDispatcher)
     worldMap.updateVis()
 
-    const densityMap = new InnovativeMap({
+    const innovativeMap = new InnovativeMap({
         parentElement: '#vis-container-innovative-map',
         containerWidth: 1000,
-        containerHeight: 400
+        containerHeight: 600
     }, commonData, nobelPrizeData, usCitiesData)
-    densityMap.updateVis()
+    innovativeMap.updateVis()
 
     treeMap = new Treemap({
         parentElement: '#treemap',
