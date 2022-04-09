@@ -13,10 +13,27 @@ const treemapDispatcher = d3.dispatch('treemapFilter');
 // Main function.
 Promise.all([
     d3.json('data/countries-110m.json'),
-    d3.csv('data/laureates.csv')
+    d3.csv('data/laureates.csv'),
+    d3.csv('data/us-cities.csv')
 ]).then(data => {
     geoData = data[0]
     nobelPrizeData = data[1]
+    let usCitiesData = data[2]
+
+    // nobelPrizeData = d3.filter(nobelPrizeData, d => d.birth_countryNow === 'USA')
+    // // Check how many matching cities.
+    // let matchCount = 0
+    // let matchingCities = new Set()
+    // for (let i = 0; i < nobelPrizeData.length; i++) {
+    //     let nobelItem = nobelPrizeData[i]
+    //     for (let j = 0; j < usCitiesData.length; j++) {
+    //         let cityItem = usCitiesData[j]
+    //         if (cityItem.city === nobelItem.birth_cityNow.substring(0, nobelItem.birth_cityNow.indexOf(','))) {
+    //             matchingCities.add(cityItem.city)
+    //             matchCount++    // 223, but only 94 unique matching cities.
+    //         }
+    //     }
+    // }
 
     // Format columns to numerical or date for easier use.
     nobelPrizeData.forEach(d => {
@@ -44,11 +61,11 @@ Promise.all([
     }, commonData, nobelPrizeData, worldMapBarChartDispatcher)
     worldMap.updateVis()
 
-    const densityMap = new DotDensityMap({
-        parentElement: '#vis-container-dot-density-map',
-        containerWidth: 400,
+    const densityMap = new InnovativeMap({
+        parentElement: '#vis-container-innovative-map',
+        containerWidth: 1000,
         containerHeight: 400
-    }, commonData, nobelPrizeData)
+    }, commonData, nobelPrizeData, usCitiesData)
     densityMap.updateVis()
 
     treeMap = new Treemap({
@@ -72,15 +89,15 @@ worldMapBarChartDispatcher.on('filterCountry', selectedCountry => {
         // Filter data to only include data with selected country.
         barChart.data = filterCsvData(nobelPrizeData, selectedCountry)
     }
-    
+
     barChart.updateVis()
 })
 
 // Show countries with winners in selected categories.
 worldMapBarChartDispatcher.on('filterPrizeCategories', selectedPrizeCategories => {
     if (selectedPrizeCategories.length === 0) {
-        console.log('Categories: ', selectedPrizeCategories)
-        console.log('Common data without categories: ', commonData)
+        // console.log('Categories: ', selectedPrizeCategories)
+        // console.log('Common data without categories: ', commonData)
 
         let rolledData = rollupData(nobelPrizeData)
         let minMaxData = minMax(groupData(nobelPrizeData))
@@ -88,8 +105,8 @@ worldMapBarChartDispatcher.on('filterPrizeCategories', selectedPrizeCategories =
         worldMap.commonData = commonData
     } else {
         let nobelPrizeDataWithSpecificCategories = filterCsvDataWithKeys(nobelPrizeData, selectedPrizeCategories)
-        console.log('Categories: ', selectedPrizeCategories)
-        console.log('Common data with categories: ', commonData)
+        // console.log('Categories: ', selectedPrizeCategories)
+        // console.log('Common data with categories: ', commonData)
         let rolledData = rollupData(nobelPrizeDataWithSpecificCategories)
         let minMaxData = minMax(groupData(nobelPrizeDataWithSpecificCategories))
         worldMap.commonData = joinData(geoData, rolledData, minMaxData)
