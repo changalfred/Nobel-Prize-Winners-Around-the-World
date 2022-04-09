@@ -8,7 +8,6 @@ class BarChart {
         }
         this.data = _data;
         this.dispatcher = _dispatcher
-        this.selectedCategories = []    // Interaction with world map.
         this.initVis();
     }
 
@@ -110,24 +109,26 @@ class BarChart {
 
             let colourFill = resetFill(category)
 
-            d3.select(this)
-                .style('fill', colourFill)
+            if (!d3.select(this).classed('active')) {
+                d3.select(this)
+                    .style('fill', colourFill)
+            }
         })
 
         bars.on('click', function (event, d) {
-            const category = d[0]
-            const categories = vis.selectedCategories
+            const isActive = d3.select(this).classed('active')
+            d3.select(this).classed('active', !isActive)
 
-            // Remove category if already in array.
-            let index = categories.indexOf(category)
-            if (index !== -1) {
-                categories.splice(index, 1)
-            } else {
-                // Else, category doesn't exist yet.
-                categories.push(category)
+            const selectedCategories = vis.chart.selectAll('.bar.active').data().map(d => d[0])
+            d3.select(this).style('stroke', 'black').style('stroke-width', 2).style('fill', darkenFill(d[0]))
+
+            if (!d3.select(this).classed('active')) {
+                d3.select(this)
+                    .style('fill', resetFill(d[0]))
+                    .style('stroke', 'none')
             }
 
-            vis.dispatcher.call('filterPrizeCategories', event, categories)
+            vis.dispatcher.call('filterPrizeCategories', event, selectedCategories)
         })
 
         // Update the axes because the underlying scales might have changed

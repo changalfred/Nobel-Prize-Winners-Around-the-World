@@ -64,6 +64,7 @@ Promise.all([
     barChart.updateVis();
 })
 
+// Show average prize money of each category of winners in selected country.
 worldMapBarChartDispatcher.on('filterCountry', selectedCountry => {
     if (selectedCountry === null) {
         barChart.data = nobelPrizeData
@@ -71,15 +72,27 @@ worldMapBarChartDispatcher.on('filterCountry', selectedCountry => {
         // Filter data to only include data with selected country.
         barChart.data = filterCsvData(nobelPrizeData, selectedCountry)
     }
-
-    // console.log('Barchart data: ', barChart.data)
-
+    
     barChart.updateVis()
 })
 
+// Show countries with winners in selected categories.
 worldMapBarChartDispatcher.on('filterPrizeCategories', selectedPrizeCategories => {
     if (selectedPrizeCategories.length === 0) {
+        console.log('Categories: ', selectedPrizeCategories)
+        console.log('Common data without categories: ', commonData)
+
+        let rolledData = rollupData(nobelPrizeData)
+        let minMaxData = minMax(groupData(nobelPrizeData))
+        commonData = joinData(geoData, rolledData, minMaxData)
         worldMap.commonData = commonData
+    } else {
+        let nobelPrizeDataWithSpecificCategories = filterCsvDataWithKeys(nobelPrizeData, selectedPrizeCategories)
+        console.log('Categories: ', selectedPrizeCategories)
+        console.log('Common data with categories: ', commonData)
+        let rolledData = rollupData(nobelPrizeDataWithSpecificCategories)
+        let minMaxData = minMax(groupData(nobelPrizeDataWithSpecificCategories))
+        worldMap.commonData = joinData(geoData, rolledData, minMaxData)
     }
 
     worldMap.updateVis()

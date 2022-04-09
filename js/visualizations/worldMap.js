@@ -154,16 +154,16 @@ class NobelPrizeWorldMap {
                 }
             })
             .on('click', function (event, d) {
-                // Deactivate all previously selected countries.
-                d3.selectAll('.country')
-                    .attr('stroke-width', 0.5)
-
                 const isActive = d3.select(this).classed('active')
+
+                // Deactivate all previously selected countries.
+                d3.selectAll('.country').classed('active', false)
+                    .style('stroke-width', 0.5)
+
                 d3.select(this).classed('active', !isActive)
-                    .attr('stroke-width', 1.5)
+                    .style('stroke-width', 1.5)
 
                 const selectedCountry = d.properties.name
-                console.log(selectedCountry)
 
                 vis.dispatcher.call('filterCountry', event, selectedCountry)
             })

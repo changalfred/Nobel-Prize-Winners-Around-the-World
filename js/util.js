@@ -86,6 +86,18 @@ function filterCsvData(data, key) {
     return data.filter(d => d.birth_countryNow === key)
 }
 
+function filterCsvDataWithKeys(data, keys) {
+    let newData = data
+
+    newData = newData.filter(function (d) {
+        let doesInclude = keys.includes(d.category)
+        console.log('Includes?: ', keys, d.category, doesInclude)
+        return doesInclude
+    })
+
+    return newData
+}
+
 // Join data here.
 function joinData(topoMap, csvData, minMaxWinnersPerCountryData) {
     const mapItems = topoMap.objects.countries.geometries
