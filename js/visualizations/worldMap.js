@@ -1,5 +1,5 @@
 class NobelPrizeWorldMap {
-    constructor(_config, _commonData, _nobelPrizeData) {
+    constructor(_config, _commonData, _nobelPrizeData, _dispatcher) {
         this.config = {
             parentElement: _config.parentElement,
             containerWidth: _config.containerWidth,
@@ -14,6 +14,7 @@ class NobelPrizeWorldMap {
 
         this.commonData = _commonData;
         this.nobelPrizeData = _nobelPrizeData;
+        this.dispatcher = _dispatcher
         this.initVis();
     };
 
@@ -84,7 +85,6 @@ class NobelPrizeWorldMap {
             .data(countries.features)
             .join('path')
             .attr('class', function (d) {
-                console.log(d)
                 let count = d.properties.winnerCount
 
                 // Count matches the legend bin labels.
@@ -147,11 +147,25 @@ class NobelPrizeWorldMap {
                 d3.select('#map-tooltip')
                     .style('display', 'none');
 
-                d3.select(this)
-                    .style('stroke-width', 0.5);
+                // Ensure cursor leaving active country does not change stroke width.
+                if (!d3.select(this).classed('active')) {
+                    d3.select(this)
+                        .style('stroke-width', 0.5);
+                }
             })
             .on('click', function (event, d) {
+                const isActive = d3.select(this).classed('active')
 
+                // Deactivate all previously selected countries.
+                d3.selectAll('.country').classed('active', false)
+                    .style('stroke-width', 0.5)
+
+                d3.select(this).classed('active', !isActive)
+                    .style('stroke-width', 1.5)
+
+                const selectedCountry = d.properties.name
+
+                vis.dispatcher.call('filterCountry', event, selectedCountry)
             })
             .on('dblclick', function (event, d) {
                 // Innovative view.

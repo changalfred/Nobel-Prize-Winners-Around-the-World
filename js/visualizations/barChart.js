@@ -1,5 +1,5 @@
 class BarChart {
-    constructor(_config, _data) {
+    constructor(_config, _data, _dispatcher) {
         this.config = {
             parentElement: _config.parentElement,
             containerWidth: 650,
@@ -7,6 +7,7 @@ class BarChart {
             margin: { top: 15, right: 15, bottom: 70, left: 120 }
         }
         this.data = _data;
+        this.dispatcher = _dispatcher
         this.initVis();
     }
 
@@ -72,6 +73,7 @@ class BarChart {
     updateVis() {
         let vis = this;
 
+
         vis.prizeAmountPerCategory = d3.rollup(vis.data, v => d3.mean(v, d => d.prizeAmountAdjusted), d => d.category);
         vis.xScale.domain([0, d3.max(vis.prizeAmountPerCategory.values()) + 1e6]);
 
@@ -89,15 +91,91 @@ class BarChart {
             .data(vis.prizeAmountPerCategory, d => vis.yValue(d))
             .join('rect')
             .attr('class', 'bar')
-            .attr('x', d => 0)
+            .attr('x', 0)
             .attr('y', d => vis.yScale(vis.yValue(d)))
             .attr('width', d => vis.xScale(vis.xValue(d)))
-            .attr('height', d => vis.yScale.bandwidth())
-            .attr('fill', 'green');
+            .attr('height', vis.yScale.bandwidth())
+            .attr('fill', (d, i) => d3.schemeTableau10[i]);
+
+        bars.on('mouseover', function (event, d) {
+            let colourFill = darkenFill(d[0])
+
+            d3.select(this)
+                .style('fill', colourFill)
+        })
+
+        bars.on('mouseleave', function (event, d) {
+            const category = d[0]
+
+            let colourFill = resetFill(category)
+
+            if (!d3.select(this).classed('active')) {
+                d3.select(this)
+                    .style('fill', colourFill)
+            }
+        })
+
+        bars.on('click', function (event, d) {
+            const isActive = d3.select(this).classed('active')
+            d3.select(this).classed('active', !isActive)
+
+            const selectedCategories = vis.chart.selectAll('.bar.active').data().map(d => d[0])
+            d3.select(this).style('stroke', 'black').style('stroke-width', 2).style('fill', darkenFill(d[0]))
+
+            if (!d3.select(this).classed('active')) {
+                d3.select(this)
+                    .style('fill', resetFill(d[0]))
+                    .style('stroke', 'none')
+            }
+
+            vis.dispatcher.call('filterPrizeCategories', event, selectedCategories)
+        })
 
         // Update the axes because the underlying scales might have changed
         vis.xAxisG.call(vis.xAxis).call((g) => g.select(".domain").remove());
         vis.yAxisG.call(vis.yAxis).call((g) => g.select(".domain").remove());
     }
+}
 
+function darkenFill(category, step) {
+    let colourFill
+
+    // Darken when cursor touches bar.
+    if (category === 'Peace') {
+        colourFill = d3.rgb(d3.schemeTableau10[0]).darker(step)
+    } else if (category === 'Physics') {
+        colourFill = d3.rgb(d3.schemeTableau10[1]).darker(step)
+    } else if (category === 'Economic Sciences') {
+        colourFill = d3.rgb(d3.schemeTableau10[2]).darker(step)
+    } else if (category === 'Physiology or Medicine') {
+        colourFill = d3.rgb(d3.schemeTableau10[3]).darker(step)
+    } else if (category === 'Chemistry') {
+        colourFill = d3.rgb(d3.schemeTableau10[4]).darker(step)
+    } else {
+        // Category is literature.
+        colourFill = d3.rgb(d3.schemeTableau10[5]).darker(step)
+    }
+    return colourFill
+}
+
+function resetFill(category) {
+    let colourFill
+
+    // Reset to default colours when cursor leaves bar.
+    if (category === 'Peace') {
+        colourFill = d3.schemeTableau10[0]
+    } else if (category === 'Physics') {
+        colourFill = d3.schemeTableau10[1]
+    } else if (category === 'Economic Sciences') {
+        colourFill = d3.schemeTableau10[2]
+    } else if (category === 'Physiology or Medicine') {
+        colourFill = d3.schemeTableau10[3]
+    } else if (category === 'Chemistry') {
+        colourFill = d3.schemeTableau10[4]
+    } else {
+        // Category is literature.
+        colourFill = d3.schemeTableau10[5]
+    }
+
+    return colourFill
 }
