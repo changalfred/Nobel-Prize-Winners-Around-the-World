@@ -73,6 +73,13 @@ Promise.all([
     }, commonData, nobelPrizeData, usCitiesData)
     innovativeMap.updateVis()
 
+    const individualWinnersView = new WinnersSmallMultiples({
+        parentElement: '#vis-container-individual-winners',
+        containerWidth: 400,
+        containerHeight: 150
+    }, nobelPrizeData, usCitiesData)
+    individualWinnersView.updateVis()
+
     treeMap = new Treemap({
         parentElement: '#treemap',
         containerWidth: 500,
