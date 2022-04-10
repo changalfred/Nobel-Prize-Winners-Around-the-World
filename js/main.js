@@ -7,7 +7,8 @@ let geoData, commonData, nobelPrizeData
 // winners belonging to category (can have multiple categories).
 // filteredCountry: select a country to show prize winnings of each category in that country
 // (only one country can be selected at any point).
-const worldMapBarChartDispatcher = d3.dispatch('filterPrizeCategories', 'filterCountry')
+const worldMapBarChartDispatcher = d3.dispatch('filterCategories', 'filterCountry')
+
 const treemapDispatcher = d3.dispatch('treemapFilter');
 
 // Main function.
@@ -106,7 +107,7 @@ worldMapBarChartDispatcher.on('filterCountry', selectedCountry => {
 })
 
 // Show countries with winners in selected categories.
-worldMapBarChartDispatcher.on('filterPrizeCategories', selectedPrizeCategories => {
+worldMapBarChartDispatcher.on('filterCategories', selectedPrizeCategories => {
     if (selectedPrizeCategories.length === 0) {
         let rolledData = rollupData(nobelPrizeData)
         let minMaxData = minMax(groupData(nobelPrizeData))
