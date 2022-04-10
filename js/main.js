@@ -3,12 +3,11 @@ const parseDate = d3.timeParse('%Y-%m-%d')
 let worldMap, treeMap, barChart
 let geoData, commonData, nobelPrizeData
 
-// filteredCategories: select a category on bar chart to filter countries that have
-// winners belonging to category (can have multiple categories).
+// filteredCategories: select at least one category on bar chart to filter countries that have
+// winners belonging to category
 // filteredCountry: select a country to show prize winnings of each category in that country
-// (only one country can be selected at any point).
 const worldMapBarChartDispatcher = d3.dispatch('filterCategories', 'filterCountry')
-
+const innovativeMapIndividualWinnersDispatcher = d3.dispatch('filterCities', 'filterWinners')
 const treemapDispatcher = d3.dispatch('treemapFilter');
 
 // Main function.
@@ -58,7 +57,7 @@ Promise.all([
     let minMaxData = minMax(groupData(nobelPrizeData))
     commonData = joinData(geoData, rolledData, minMaxData)
 
-    console.log('Common data: ', commonData)
+    // console.log('Common data: ', commonData)
 
     worldMap = new NobelPrizeWorldMap({
         parentElement: '#vis-container-map',
@@ -71,14 +70,14 @@ Promise.all([
         parentElement: '#vis-container-innovative-map',
         containerWidth: 1000,
         containerHeight: 800
-    }, commonData, nobelPrizeData, usCitiesData)
+    }, commonData, nobelPrizeData, usCitiesData, innovativeMapIndividualWinnersDispatcher)
     innovativeMap.updateVis()
 
     const individualWinnersView = new WinnersSmallMultiples({
         parentElement: '#vis-container-individual-winners',
         containerWidth: 500,
         containerHeight: 150
-    }, nobelPrizeData, usCitiesData)
+    }, nobelPrizeData, usCitiesData, innovativeMapIndividualWinnersDispatcher)
     individualWinnersView.updateVis()
 
     treeMap = new Treemap({
@@ -121,4 +120,14 @@ worldMapBarChartDispatcher.on('filterCategories', selectedPrizeCategories => {
     }
 
     worldMap.updateVis()
+})
+
+// Show winners in of selected cities.
+innovativeMapIndividualWinnersDispatcher.on('filterCities', selectedCities => {
+
+})
+
+// Show city of selected winner.
+innovativeMapIndividualWinnersDispatcher.on('filterWinners', selectedWinners => {
+
 })

@@ -1,5 +1,5 @@
 class InnovativeMap {
-    constructor(_config, _commonData, _nobelPrizeData, _usCitiesData) {
+    constructor(_config, _commonData, _nobelPrizeData, _usCitiesData, _dispatcher) {
         this.config = {
             parentElement: _config.parentElement,
             containerWidth: _config.containerWidth,
@@ -14,6 +14,7 @@ class InnovativeMap {
         this.commonData = _commonData
         this.nobelPrizeData = _nobelPrizeData
         this.usCitiesData = _usCitiesData
+        this.dispatcher = _dispatcher
         this.initVis()
     };
 
@@ -125,8 +126,7 @@ class InnovativeMap {
                 const isActive = d3.select(this).classed('active')
                 d3.select(this).classed('active', !isActive)
 
-                const selectedCities = vis.cityMap.selectAll('.city.active').data().map(d => d.city)
-                console.log('Selected cities: ', selectedCities)
+                let selectedCities = vis.cityMap.selectAll('.city.active').data().map(d => d.city)
                 d3.select(this).style('fill', 'green')
 
                 if (!d3.select(this).classed('active')) {
@@ -136,6 +136,9 @@ class InnovativeMap {
                     d3.select(this)
                         .style('fill', 'green')
                 }
+
+                // Interact with individual winners view.
+                vis.dispatcher.call('filterCities', event, selectedCities)
             })
     }
 }

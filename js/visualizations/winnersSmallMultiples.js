@@ -1,5 +1,5 @@
 class WinnersSmallMultiples {
-    constructor(_config, _nobelPrizeData, _usCitiesData) {
+    constructor(_config, _nobelPrizeData, _usCitiesData, _dispatcher) {
         this.config = {
             parentElement: _config.parentElement,
             containerWidth: _config.containerWidth,
@@ -13,6 +13,7 @@ class WinnersSmallMultiples {
 
         this.nobelPrizeData = _nobelPrizeData
         this.usCitiesData = _usCitiesData
+        this.dispatcher = _dispatcher
         this.initVis()
     };
 
@@ -123,7 +124,9 @@ class WinnersSmallMultiples {
                             .style('display', 'none');
                     })
                     .on('click', function (event, d) {
+                        let selectedWinners = []
 
+                        vis.dispatcher.call('filterWinners', event, selectedWinners)
                     })
             })
     }
