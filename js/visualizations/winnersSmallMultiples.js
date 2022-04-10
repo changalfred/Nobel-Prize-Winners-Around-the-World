@@ -28,21 +28,101 @@ class WinnersSmallMultiples {
             .attr('id', 'individual-winners-view')
             .attr('width', vis.config.containerWidth)
             .attr('height', vis.config.containerHeight)
-            .attr('transform', `translate(450, -850)`)
+            .attr('transform', `translate(450, -800)`)
+
+        // Title
+        vis.svg.append('text')
+            .attr('class', 'individual-winners title')
+            .attr('x', vis.viewWidth / 2 - 45)
+            .attr('y', vis.config.margin.top - 15)
+            .text('Individual Winners')
 
         // Create view area.
         vis.view = vis.svg.append('g')
-            .attr('transform', `translate(${vis.config.margin.left}, ${vis.config.margin.right})`)
+            .attr('transform', `translate(${vis.config.margin.left / 2 + 5}, ${vis.config.margin.top + 10})`)
+            .attr('border', '2px solid black')
+
+        //
+
+        vis.updateVis()
     }
 
     updateVis() {
         let vis = this
 
-        console.log('Prize data: ', vis.nobelPrizeData)
-        console.log('City data: ', vis.usCitiesData)
+        // console.log('Prize data: ', vis.nobelPrizeData)
+        // console.log('City data: ', vis.usCitiesData)
+
+        // Only keep USA winners.
+        vis.usNobelPrizeData = nobelPrizeData.filter(d => d.birth_countryNow === 'United States of America')
+
+        // Create 2D array: rows of winners where number of winners per row is as equal as possible.
+        vis.matrixWinnersData = []
+        // Make 2D array with 9 rows.
+        for (let i = 0; i < 9; i++) {
+            vis.matrixWinnersData[i] = []
+        }
+
+        let count = 0   // Track item count in US winners data.
+        // Insert item into each row.
+        for (let i = 0; i < 9; i++) {
+            let matrix = vis.matrixWinnersData[i]
+            // 25 items per row.
+            for (let j = 0; j < 25; j++) {
+                if (count === 223) {    // US winners data has 223 items.
+                    break
+                }
+                matrix.push(vis.usNobelPrizeData[count])
+                count++
+            }
+        }
+
+        // Group winners into birth cities.
+        vis.winnersByCity = d3.groups(vis.usNobelPrizeData, d => d.birth_cityNow)   // Needed?
+
+        vis.renderVis()
     }
 
     renderVis() {
         let vis = this
+
+        let row = vis.view.selectAll('.row')
+            .data(vis.matrixWinnersData)
+            .join('g')
+            .attr('class', '.row')
+            .attr('x', 0)
+            .attr('y', (d, i) => i * 10)
+            .each(function (d, i) {
+                d3.select(this)
+                    .selectAll('.row')
+                    .data(d)
+                    .join('circle')
+                    .attr('cx', function (d, j) {
+                        return j * 15
+                    })
+                    .attr('cy', function () {
+                        return i * 10
+                    })
+                    .attr('r', 4)
+                    .attr('fill', d => d.gender === 'male' ? 'blue' : 'pink')
+                    .on('mouseover', function (event, d) {
+                        d3.select('#individual-winners-tooltip')
+                            .style('display', 'block')
+                            .style('background', 'white')
+                            .style('border', 'solid')
+                            .style('border-radius', '5px')
+                            .style('padding', vis.config.tooltipPadding)
+                            .style('left', (event.pageX + vis.config.tooltipPadding) + 'px')
+                            .style('top', (event.pageY + vis.config.tooltipPadding) + 'px')
+                            .html(`<div><b>${d.fullName}</b></div>`)
+                    })
+                    .on('mouseleave', function (event, d) {
+                        d3.select('#individual-winners-tooltip')
+                            .style('display', 'none');
+                    })
+                    .on('click', function (event, d) {
+
+                    })
+            })
     }
 }

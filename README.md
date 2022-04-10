@@ -38,3 +38,5 @@ https://www.carlosrendon.me/unfinished_d3_book/axes.html: Format x-axis ticks wi
 https://observablehq.com/@d3/color-schemes: Use tableau color scheme for categorical scale.
 
 https://stackoverflow.com/questions/49279041/d3-js-transform-hex-color-into-darker-tone-hex-color: Darken colour in hex format.
+
+https://stackoverflow.com/questions/35728448/loop-through-array-of-arrays-in-d3: Draw 2-D array of points.

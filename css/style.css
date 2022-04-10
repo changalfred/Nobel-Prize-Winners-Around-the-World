@@ -4,6 +4,21 @@
     box-shadow: 3px 3px 3px 0px rgb(92 92 92 / 0.5);
 }
 
+#vis-container-individual-winners svg {
+    border: 2px solid black;
+}
+
+.individual-winners {
+    font-weight: bold;
+    font-size: large;
+}
+
+#individual-winners-tooltip {
+    position: absolute;
+    font-size: 12px;
+    box-shadow: 3px 3px 3px 0px rgb(92 92 92 / 0.5);
+}
+
 #inno-city-tooltip {
   position: absolute;
   font-size: 12px;
