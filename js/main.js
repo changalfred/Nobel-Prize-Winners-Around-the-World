@@ -69,7 +69,7 @@ Promise.all([
     const innovativeMap = new InnovativeMap({
         parentElement: '#vis-container-innovative-map',
         containerWidth: 1000,
-        containerHeight: 600
+        containerHeight: 800
     }, commonData, nobelPrizeData, usCitiesData)
     innovativeMap.updateVis()
 

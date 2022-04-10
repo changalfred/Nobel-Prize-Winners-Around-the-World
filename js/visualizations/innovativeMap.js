@@ -36,15 +36,15 @@ class InnovativeMap {
             .attr('x', vis.config.containerWidth / 4)
             .attr('y', 20)
 
-        vis.ddMap = vis.svg.append('g')
+        vis.cityMap = vis.svg.append('g')
             .attr('transform', `translate(${vis.config.margin.left}, ${vis.config.margin.top})`)
 
         // Initialize projection and path generator.
         vis.projection = d3.geoAlbers()
             // .center([500, 200])
-            .scale(500)
+            .scale(600)
             // .scale([vis.config.containerWidth / 2, vis.config.containerHeight / 2])
-            .translate([vis.width / 2 + 50, vis.height / 2 + 75])
+            .translate([vis.width / 2 + 100, vis.height / 2 + 75])
         vis.geoPath = d3.geoPath().projection(vis.projection)
 
         vis.updateVis()
@@ -92,7 +92,7 @@ class InnovativeMap {
         //     .translate([vis.width / 2, vis.height / 2 + 75])
         // const path = vis.geoPath.projection(vis.projection)
 
-        vis.ddMap.selectAll('path')
+        vis.cityMap.selectAll('path')
             .data(vis.countryFeatures)
             .join('path')
             .attr('class', 'country')
@@ -102,10 +102,10 @@ class InnovativeMap {
             .attr('stroke-width', 1)
 
         // Plot the cities as points.
-        vis.ddMap.selectAll('.point')
+        vis.cityMap.selectAll('.city')
             .data(vis.usCitiesData)
             .join('circle')
-            .attr('class', 'point')
+            .attr('class', 'city')
             .attr('transform', function (d) {
                 return `translate(${vis.projection([d.lon, d.lat])})`
             })
@@ -119,9 +119,50 @@ class InnovativeMap {
             //     console.log('Lat: ', d)
             //     return d.lat    // Latitude to determine y position.
             // })
-            .attr('r', '3px')
-            .attr('fill', 'green')
+            .attr('r', '5')
+            .attr('stroke', 'black')
+            .attr('stroke-width', 1)
+            .attr('fill', 'lightgray')
+            .on('mouseover', function (event, d) {
+                d3.selectAll('.city')
+                    .style('opacity', 0.65);
 
+                d3.select('#inno-city-tooltip')
+                    .style('display', 'block')
+                    .style('background', 'white')
+                    .style('border', 'solid')
+                    .style('border-radius', '5px')
+                    .style('padding', vis.config.tooltipPadding)
+                    .style('left', (event.pageX + vis.config.tooltipPadding) + 'px')
+                    .style('top', (event.pageY + vis.config.tooltipPadding) + 'px')
+                    .html(`<div><b>${d.city + ', ' + d.state}</b></div>`)
+
+                d3.select(this)
+                    .style('opacity', 1);
+            })
+            .on('mouseleave', function (event, d) {
+                d3.selectAll('.city')
+                    .style('opacity', 1)
+
+                d3.select('#inno-city-tooltip')
+                    .style('display', 'none');
+            })
+            .on('click', function (event, d) {
+                const isActive = d3.select(this).classed('active')
+                d3.select(this).classed('active', !isActive)
+
+                const selectedCities = vis.cityMap.selectAll('.city.active').data().map(d => d.city)
+                console.log('Selected cities: ', selectedCities)
+                d3.select(this).style('fill', 'green')
+
+                if (!d3.select(this).classed('active')) {
+                    d3.select(this)
+                        .style('fill', 'lightgray')
+                } else {
+                    d3.select(this)
+                        .style('fill', 'green')
+                }
+            })
     }
 
     renderLegend() {
@@ -129,7 +170,7 @@ class InnovativeMap {
 
         const keys = ['male', 'female']
 
-        let legendBins = vis.ddMap.selectAll('.legend-bin')
+        let legendBins = vis.cityMap.selectAll('.legend-bin')
             .data(keys)
 
         legendBins.join('circle')
