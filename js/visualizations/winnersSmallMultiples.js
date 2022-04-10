@@ -8,7 +8,7 @@ class WinnersSmallMultiples {
             tooltipPadding: 10,
             legendMarginTop: 375,
             legendMarginLeft: 35,
-            legendRadius: 8
+            legendRadius: 4
         }
 
         this.nobelPrizeData = _nobelPrizeData
@@ -42,16 +42,17 @@ class WinnersSmallMultiples {
             .attr('transform', `translate(${vis.config.margin.left / 2 + 5}, ${vis.config.margin.top + 10})`)
             .attr('border', '2px solid black')
 
-        //
+        // // Attach g for legend.
+        vis.legendGroup = vis.svg.append('g')
+            .attr('width', 100)
+            .attr('height', 75)
+            .attr('transform', `translate(${vis.viewWidth - 60}, 45)`)
 
         vis.updateVis()
     }
 
     updateVis() {
         let vis = this
-
-        // console.log('Prize data: ', vis.nobelPrizeData)
-        // console.log('City data: ', vis.usCitiesData)
 
         // Only keep USA winners.
         vis.usNobelPrizeData = nobelPrizeData.filter(d => d.birth_countryNow === 'United States of America')
@@ -81,6 +82,7 @@ class WinnersSmallMultiples {
         vis.winnersByCity = d3.groups(vis.usNobelPrizeData, d => d.birth_cityNow)   // Needed?
 
         vis.renderVis()
+        vis.renderLegend()
     }
 
     renderVis() {
@@ -124,5 +126,27 @@ class WinnersSmallMultiples {
 
                     })
             })
+    }
+
+    renderLegend() {
+        let vis = this
+
+        const keys = ['male', 'female']
+
+        let legendBins = vis.legendGroup.selectAll('.legend-bin')
+            .data(keys)
+
+        legendBins.join('circle')
+            .attr('class', d => `legend-mark gender-${d}`)
+            .attr('cx', 25)
+            .attr('cy', (d, i) => i * 25)
+            .attr('r', vis.config.legendRadius)
+            .attr('fill', d => d === 'male' ? 'blue' : 'pink')
+
+        legendBins.join('text')
+            .attr('class', d => `legend-label gender-${d}`)
+            .attr('x', 35)
+            .attr('y', (d, i) => i * 25 + 4)
+            .text(d => d)
     }
 }

@@ -41,11 +41,15 @@ class InnovativeMap {
 
         // Initialize projection and path generator.
         vis.projection = d3.geoAlbers()
-            // .center([500, 200])
             .scale(600)
-            // .scale([vis.config.containerWidth / 2, vis.config.containerHeight / 2])
             .translate([vis.width / 2 + 100, vis.height / 2 + 75])
         vis.geoPath = d3.geoPath().projection(vis.projection)
+
+        // // Attach g for legend.
+        // vis.legendGroup = vis.svg.append('g')
+        //     .attr('width', )
+        //     .attr('height', )
+        //     .attr('transform', `translate`)
 
         vis.updateVis()
     }
@@ -58,7 +62,6 @@ class InnovativeMap {
         vis.bounds = vis.geoPath.bounds(vis.countryFeatures[0])
 
         // Combine data from us-cities.csv and laureates.csv.
-        // let matchCount = 0
         vis.winnersWithLatLon = []
         for (let i = 0; i < vis.usNobelPrizeData[1][1].length; i++) {
             let nobelItem = vis.usNobelPrizeData[1][1][i]
@@ -71,10 +74,9 @@ class InnovativeMap {
                 }
             }
         }
-        // console.log('Nobel Item: ', vis.winnersWithLatLon)
 
         vis.renderVis()
-        vis.renderLegend()
+        // vis.renderLegend()
     }
 
     renderVis() {
@@ -165,29 +167,25 @@ class InnovativeMap {
             })
     }
 
-    renderLegend() {
-        let vis = this
-
-        const keys = ['male', 'female']
-
-        let legendBins = vis.cityMap.selectAll('.legend-bin')
-            .data(keys)
-
-        legendBins.join('circle')
-            .attr('class', d => `legend-mark gender-${d}`)
-            .attr('cx', 20)
-            .attr('cy', (d, i) => i * 25)
-            .attr('r', vis.config.legendRadius)
-            .attr('fill', d => d === 'male' ? 'blue' : 'pink')
-
-        legendBins.join('text')
-            .attr('class', d => `legend-label gender-${d}`)
-            .attr('x', 35)
-            .attr('y', (d, i) => i * 25 + 4)
-            .text(d => d)
-
-        legendBins.on('hover', function () {
-
-        })
-    }
+    // renderLegend() {
+    //     let vis = this
+    //
+    //     const keys = ['male', 'female']
+    //
+    //     let legendBins = vis.cityMap.selectAll('.legend-bin')
+    //         .data(keys)
+    //
+    //     legendBins.join('circle')
+    //         .attr('class', d => `legend-mark gender-${d}`)
+    //         .attr('cx', 20)
+    //         .attr('cy', (d, i) => i * 25)
+    //         .attr('r', vis.config.legendRadius)
+    //         .attr('fill', d => d === 'male' ? 'blue' : 'pink')
+    //
+    //     legendBins.join('text')
+    //         .attr('class', d => `legend-label gender-${d}`)
+    //         .attr('x', 35)
+    //         .attr('y', (d, i) => i * 25 + 4)
+    //         .text(d => d)
+    // }
 }

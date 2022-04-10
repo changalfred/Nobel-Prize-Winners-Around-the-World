@@ -75,7 +75,7 @@ Promise.all([
 
     const individualWinnersView = new WinnersSmallMultiples({
         parentElement: '#vis-container-individual-winners',
-        containerWidth: 400,
+        containerWidth: 500,
         containerHeight: 150
     }, nobelPrizeData, usCitiesData)
     individualWinnersView.updateVis()
