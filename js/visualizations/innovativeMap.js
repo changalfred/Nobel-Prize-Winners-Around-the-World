@@ -45,12 +45,6 @@ class InnovativeMap {
             .translate([vis.width / 2 + 100, vis.height / 2 + 75])
         vis.geoPath = d3.geoPath().projection(vis.projection)
 
-        // // Attach g for legend.
-        // vis.legendGroup = vis.svg.append('g')
-        //     .attr('width', )
-        //     .attr('height', )
-        //     .attr('transform', `translate`)
-
         vis.updateVis()
     }
 
@@ -82,18 +76,6 @@ class InnovativeMap {
     renderVis() {
         let vis = this
 
-        // let scale = 0.95 / Math.max((vis.bounds[1][0] - vis.bounds[0][0]) / vis.config.containerWidth,
-        //     (vis.bounds[1][1] - vis.bounds[0][1]) / vis.config.containerHeight)
-        // let translate = [(vis.config.containerWidth - scale * (vis.bounds[1][0] + vis.bounds[0][0])) / 2,
-        //     (vis.config.containerHeight - scale * (vis.bounds[1][1] + vis.bounds[0][1])) / 2]
-
-        // vis.projection = d3.geoAlbers()
-        //     // .center([500, 200])
-        //     .scale(400)
-        //     // .scale([vis.config.containerWidth / 2, vis.config.containerHeight / 2])
-        //     .translate([vis.width / 2, vis.height / 2 + 75])
-        // const path = vis.geoPath.projection(vis.projection)
-
         vis.cityMap.selectAll('path')
             .data(vis.countryFeatures)
             .join('path')
@@ -111,16 +93,6 @@ class InnovativeMap {
             .attr('transform', function (d) {
                 return `translate(${vis.projection([d.lon, d.lat])})`
             })
-            // .attr('cx', function (d, i) {
-            //     // console.log('Data: ', d)
-            //     console.log('Lon: ', d)
-            //     return d.lon + 500   // Longitude to determine x position.
-            // })
-            // .attr('cy', function (d, i) {
-            //     // console.log('Data: ', d)
-            //     console.log('Lat: ', d)
-            //     return d.lat    // Latitude to determine y position.
-            // })
             .attr('r', '5')
             .attr('stroke', 'black')
             .attr('stroke-width', 1)
@@ -166,26 +138,4 @@ class InnovativeMap {
                 }
             })
     }
-
-    // renderLegend() {
-    //     let vis = this
-    //
-    //     const keys = ['male', 'female']
-    //
-    //     let legendBins = vis.cityMap.selectAll('.legend-bin')
-    //         .data(keys)
-    //
-    //     legendBins.join('circle')
-    //         .attr('class', d => `legend-mark gender-${d}`)
-    //         .attr('cx', 20)
-    //         .attr('cy', (d, i) => i * 25)
-    //         .attr('r', vis.config.legendRadius)
-    //         .attr('fill', d => d === 'male' ? 'blue' : 'pink')
-    //
-    //     legendBins.join('text')
-    //         .attr('class', d => `legend-label gender-${d}`)
-    //         .attr('x', 35)
-    //         .attr('y', (d, i) => i * 25 + 4)
-    //         .text(d => d)
-    // }
 }

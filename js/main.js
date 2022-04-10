@@ -108,17 +108,12 @@ worldMapBarChartDispatcher.on('filterCountry', selectedCountry => {
 // Show countries with winners in selected categories.
 worldMapBarChartDispatcher.on('filterPrizeCategories', selectedPrizeCategories => {
     if (selectedPrizeCategories.length === 0) {
-        // console.log('Categories: ', selectedPrizeCategories)
-        // console.log('Common data without categories: ', commonData)
-
         let rolledData = rollupData(nobelPrizeData)
         let minMaxData = minMax(groupData(nobelPrizeData))
         commonData = joinData(geoData, rolledData, minMaxData)
         worldMap.commonData = commonData
     } else {
         let nobelPrizeDataWithSpecificCategories = filterCsvDataWithKeys(nobelPrizeData, selectedPrizeCategories)
-        // console.log('Categories: ', selectedPrizeCategories)
-        // console.log('Common data with categories: ', commonData)
         let rolledData = rollupData(nobelPrizeDataWithSpecificCategories)
         let minMaxData = minMax(groupData(nobelPrizeDataWithSpecificCategories))
         worldMap.commonData = joinData(geoData, rolledData, minMaxData)

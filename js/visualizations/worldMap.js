@@ -167,12 +167,6 @@ class NobelPrizeWorldMap {
 
                 vis.dispatcher.call('filterCountry', event, selectedCountry)
             })
-            .on('dblclick', function (event, d) {
-                // Innovative view.
-                if (d.properties.winnerCount > 0) {
-                    // Add interaction here.
-                }
-            })
 
         // Create the annotation.
         const liveAnnotation = d3.annotation().annotations(vis.annotations);
