@@ -80,7 +80,7 @@ class WinnersSmallMultiples {
         }
 
         // Group winners into birth cities.
-        vis.winnersByCity = d3.groups(vis.usNobelPrizeData, d => d.birth_cityNow)   // Needed?
+        vis.winnersByCity = d3.groups(vis.usNobelPrizeData, d => d.birth_cityNow)
 
         vis.renderVis()
         vis.renderLegend()
@@ -100,15 +100,30 @@ class WinnersSmallMultiples {
                     .selectAll('.row')
                     .data(d)
                     .join('circle')
+                    // .attr('class', function (d) {
+                    //     // console.log('Class name: ', className)
+                    //     return `winner-${d.birth_cityNow}`
+                    // })
+                    .attr('class', d => `mark winner ${d.birth_cityNow}`)
                     .attr('cx', function (d, j) {
                         return j * 15
                     })
                     .attr('cy', function () {
-                        return i * 10
+                        return i * 12
                     })
                     .attr('r', 4)
                     .attr('fill', d => d.gender === 'male' ? 'blue' : 'pink')
                     .on('mouseover', function (event, d) {
+                        // Highlight all winners born in same city.
+                        let selectedWinners = []
+                        for (let i = 0; i < vis.winnersByCity.length; i++) {
+                            // console.log('Data: ', vis.winnersByCity[i])
+                            if (vis.winnersByCity[i][0] === d.birth_cityNow) {
+                                selectedWinners.push(vis.winnersByCity[i])
+                            }
+                        }
+
+                        // Tooltip for highlighted winner.
                         d3.select('#individual-winners-tooltip')
                             .style('display', 'block')
                             .style('background', 'white')
@@ -118,12 +133,37 @@ class WinnersSmallMultiples {
                             .style('left', (event.pageX + vis.config.tooltipPadding) + 'px')
                             .style('top', (event.pageY + vis.config.tooltipPadding) + 'px')
                             .html(`<div><b>${d.fullName}</b></div>`)
+
+                        let className = d3.select(this)._groups[0]
+                        d3.selectAll(className)
+                            .style('fill', 'gold')
+                            .style('r', 5)
+                            .style('stroke', 'black')
+                            .style('stroke-width', 1)
+
+                        // TODO: Uncomment and show.
+                        // d3.selectAll(`.mark .winner .${d.birth_cityNow}`)
+                        //     .style('fill', 'gold')
+                        //     .style('r', 5)
+                        //     .style('stroke', 'black')
+                        //     .style('stroke-width', 1)
+
+                        vis.dispatcher.call('highlightWinners', event, selectedWinners)
                     })
                     .on('mouseleave', function (event, d) {
                         d3.select('#individual-winners-tooltip')
                             .style('display', 'none');
+
+                        let className = d3.select(this)._groups[0]
+                        d3.selectAll(className)
+                            .style('fill', d => d.gender === 'male' ? 'blue' : 'pink')
+                            .style('r', 4)
+                            .style('stroke', 'none')
+                            .style('stroke-width', 0)
                     })
                     .on('click', function (event, d) {
+
+
                         let selectedWinners = []
 
                         vis.dispatcher.call('filterWinners', event, selectedWinners)

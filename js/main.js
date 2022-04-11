@@ -7,7 +7,8 @@ let geoData, commonData, nobelPrizeData
 // winners belonging to category
 // filteredCountry: select a country to show prize winnings of each category in that country
 const worldMapBarChartDispatcher = d3.dispatch('filterCategories', 'filterCountry')
-const innovativeMapIndividualWinnersDispatcher = d3.dispatch('filterCities', 'filterWinners')
+const innovativeMapIndividualWinnersDispatcher = d3.dispatch('highlightCity', 'highlightWinners',
+    'filterCities', 'filterWinners')
 const treemapDispatcher = d3.dispatch('treemapFilter');
 
 // Main function.
@@ -76,7 +77,7 @@ Promise.all([
     const individualWinnersView = new WinnersSmallMultiples({
         parentElement: '#vis-container-individual-winners',
         containerWidth: 500,
-        containerHeight: 150
+        containerHeight: 165
     }, nobelPrizeData, usCitiesData, innovativeMapIndividualWinnersDispatcher)
     individualWinnersView.updateVis()
 
@@ -120,6 +121,16 @@ worldMapBarChartDispatcher.on('filterCategories', selectedPrizeCategories => {
     }
 
     worldMap.updateVis()
+})
+
+// Highlight winners of hovered city.
+innovativeMapIndividualWinnersDispatcher.on('highlightWinners', hoveredCity => {
+
+})
+
+// Highlight city of hovered winner.
+innovativeMapIndividualWinnersDispatcher.on('highlightCity', hoveredWinners => {
+
 })
 
 // Show winners in of selected cities.
