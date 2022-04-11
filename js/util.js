@@ -82,6 +82,35 @@ function filterMapData(data, key) {
     }
 }
 
+function filterWinnersByUsaData(data, key) {
+    let usWinnersData = []
+
+    let rollupWinnersPerCountry = d3.groups(data, d => d.birth_countryNow)
+
+    for (let i = 0; i < rollupWinnersPerCountry.length; i++) {
+        if (rollupWinnersPerCountry[i][0] === 'United States of America') {
+            usWinnersData.push(rollupWinnersPerCountry[i])
+            break
+        }
+    }
+
+    // Group data by city.
+    let cityWinnersData = []
+    let groupByCity = d3.groups(usWinnersData, function (d) {
+        let winners = d[1]
+        // console.log('Winners: ', winners)
+        for (let i = 0; i < winners.length; i++) {
+            let city = winners[i].birth_cityNow.substring(0, winners[i].birth_cityNow.indexOf(','))
+            // console.log('City: ', city, ' Key: ', key)
+            if (city === key) {
+                return cityWinnersData.push(city, winners[i])
+            }
+        }
+    })
+
+    return cityWinnersData
+}
+
 function filterCsvData(data, key) {
     return data.filter(d => d.birth_countryNow === key)
 }
@@ -117,7 +146,7 @@ function joinData(topoMap, csvData, minMaxWinnersPerCountryData) {
             let winnerPerCountryItemElement = winnerPerCountryItem[j]
             let winnerKey = winnerPerCountryItemElement[0]
             let winnerValue = winnerPerCountryItemElement[1]
-                // console.log('Winner value: ', winnerPerCountryItemElement)
+            // console.log('Winner value: ', winnerPerCountryItemElement)
 
             // Keys and values for total prize money per country.
             let prizeTotalPerCountryItemElement = prizeTotalPerCountryItem[j]

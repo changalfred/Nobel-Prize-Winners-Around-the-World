@@ -57,21 +57,41 @@ class InnovativeMap {
         vis.bounds = vis.geoPath.bounds(vis.countryFeatures[0])
 
         // Combine data from us-cities.csv and laureates.csv.
-        vis.winnersWithLatLon = []
+        // vis.winnersWithLatLon = []
+        vis.validCities = []
         for (let i = 0; i < vis.usNobelPrizeData[1][1].length; i++) {
             let nobelItem = vis.usNobelPrizeData[1][1][i]
             for (let j = 0; j < vis.usCitiesData.length; j++) {
                 let cityItem = vis.usCitiesData[j]
                 if (cityItem.city === nobelItem.birth_cityNow.substring(0, nobelItem.birth_cityNow.indexOf(','))) {
-                    nobelItem.lat = cityItem.lat
-                    nobelItem.lon = cityItem.lon
-                    vis.winnersWithLatLon.push(nobelItem)
+                    // nobelItem.lat = cityItem.lat
+                    // nobelItem.lon = cityItem.lon
+                    // vis.winnersWithLatLon.push(nobelItem)
+                    vis.validCities.push(cityItem)
                 }
             }
         }
+        console.log('Vis winners with lat lon: ', vis.validCities)
+
+        // Only keep cities that have winners.
+        // vis.validCities = []
+        // for (let i = 0; i < vis.usCitiesData.length; i++) {
+        //     let city = vis.usCitiesData[i]
+        //     console.log('City: ', city)
+        //
+        //     for (let j = 0; j < vis.usNobelPrizeData[1][1].length; j++) {
+        //         let winner = vis.usNobelPrizeData[1][1][j]
+        //         console.log('Winner: ', winner)
+        //         // let winnerCity = winner.birth_cityNow.substring(0, winner.birth_cityNow.indexOf(','))
+        //         //
+        //         // if (winnerCity === city) {
+        //         //     vis.validCities.push(city)
+        //         // }
+        //     }
+        // }
+        // console.log('Valid cities: ', vis.validCities)
 
         vis.renderVis()
-        // vis.renderLegend()
     }
 
     renderVis() {
@@ -88,19 +108,18 @@ class InnovativeMap {
 
         // Plot the cities as points.
         vis.cityMap.selectAll('.city')
-            .data(vis.usCitiesData)
+            .data(vis.validCities)
             .join('circle')
             .attr('class', 'city')
-            .attr('transform', function (d) {
-                return `translate(${vis.projection([d.lon, d.lat])})`
-            })
-            .attr('r', '5')
+            .attr('transform', d => `translate(${vis.projection([d.lon, d.lat])})`)
+            .attr('r', 4)
             .attr('stroke', 'black')
             .attr('stroke-width', 1)
             .attr('fill', 'lightgray')
             .on('mouseover', function (event, d) {
+                let highlightedCity = d.city
                 d3.selectAll('.city')
-                    .style('opacity', 0.65);
+                    .style('opacity', 0.6);
 
                 d3.select('#inno-city-tooltip')
                     .style('display', 'block')
@@ -110,10 +129,12 @@ class InnovativeMap {
                     .style('padding', vis.config.tooltipPadding)
                     .style('left', (event.pageX + vis.config.tooltipPadding) + 'px')
                     .style('top', (event.pageY + vis.config.tooltipPadding) + 'px')
-                    .html(`<div><b>${d.city + ', ' + d.state}</b></div>`)
+                    .html(`<div><b>${highlightedCity + ', ' + d.state}</b></div>`)
 
                 d3.select(this)
                     .style('opacity', 1);
+
+                vis.dispatcher.call('highlightWinners', event, highlightedCity)
             })
             .on('mouseleave', function (event, d) {
                 d3.selectAll('.city')
