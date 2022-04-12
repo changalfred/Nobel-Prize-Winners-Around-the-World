@@ -117,7 +117,10 @@ function filterCsvDataWithKeys(data, keys) {
     let newData = data
 
     newData = newData.filter(function (d) {
-       return keys.includes(d.category)
+        return keys.includes(d.category)
+    })
+
+    return newData
 }
 
 // Join data here.
