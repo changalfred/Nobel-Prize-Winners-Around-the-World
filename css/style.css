@@ -1,3 +1,7 @@
+.div-button {
+    position: center;
+}
+
 #map-tooltip {
     position: absolute;
     font-size: 12px;
