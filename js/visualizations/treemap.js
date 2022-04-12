@@ -61,7 +61,6 @@ class Treemap {
 
         vis.renderVis();
 
-        // console.log(vis.data.leaves());
     }
 
     renderVis() {
