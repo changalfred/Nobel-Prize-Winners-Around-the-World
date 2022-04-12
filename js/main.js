@@ -113,7 +113,8 @@ Promise.all([
 
 // Show average prize money of each category of winners in selected country.
 worldMapBarChartDispatcher.on('filterCountry', selectedCountry => {
-    if (selectedCountry === null) {
+    console.log(selectedCountry)
+    if (selectedCountry.length === 0) {
         barChart.data = nobelPrizeData
     } else {
         // Filter data to only include data with selected country.

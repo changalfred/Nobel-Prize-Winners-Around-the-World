@@ -112,16 +112,14 @@ function filterWinnersByUsaData(data, key) {
 }
 
 function filterCsvData(data, key) {
-    return data.filter(d => d.birth_countryNow === key)
+    return data.filter(d => d.birth_countryNow === key[0])
 }
 
 function filterCsvDataWithKeys(data, keys) {
     let newData = data
 
     newData = newData.filter(function (d) {
-        let doesInclude = keys.includes(d.category)
-        console.log('Includes?: ', keys, d.category, doesInclude)
-        return doesInclude
+       return keys.includes(d.category)
     })
 
     return newData
