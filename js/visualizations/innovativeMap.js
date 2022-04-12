@@ -71,7 +71,7 @@ class InnovativeMap {
                 }
             }
         }
-        console.log('Vis winners with lat lon: ', vis.validCities)
+        // console.log('Vis winners with lat lon: ', vis.validCities)
 
         // Only keep cities that have winners.
         // vis.validCities = []
@@ -102,7 +102,7 @@ class InnovativeMap {
             .join('path')
             .attr('class', 'country')
             .attr('d', vis.geoPath)
-            .attr('fill', 'white')
+            .attr('fill', 'lightyellow')
             .attr('stroke', 'black')
             .attr('stroke-width', 1)
 
@@ -115,11 +115,11 @@ class InnovativeMap {
             .attr('r', 4)
             .attr('stroke', 'black')
             .attr('stroke-width', 1)
-            .attr('fill', 'lightgray')
+            .attr('fill', 'white')
             .on('mouseover', function (event, d) {
                 let highlightedCity = d.city
                 d3.selectAll('.city')
-                    .style('opacity', 0.6);
+                    .style('opacity', 0.5);
 
                 d3.select('#inno-city-tooltip')
                     .style('display', 'block')
@@ -132,13 +132,17 @@ class InnovativeMap {
                     .html(`<div><b>${highlightedCity + ', ' + d.state}</b></div>`)
 
                 d3.select(this)
-                    .style('opacity', 1);
+                    .style('opacity', 1)
+                    .style('stroke-width', 2)
+                    .style('fill', 'red')
 
                 vis.dispatcher.call('highlightWinners', event, highlightedCity)
             })
             .on('mouseleave', function (event, d) {
                 d3.selectAll('.city')
                     .style('opacity', 1)
+                    .style('stroke-width', 1)
+                    .style('fill', 'white')
 
                 d3.select('#inno-city-tooltip')
                     .style('display', 'none');
@@ -155,7 +159,7 @@ class InnovativeMap {
                         .style('fill', 'lightgray')
                 } else {
                     d3.select(this)
-                        .style('fill', 'green')
+                        .style('fill', 'gold')
                 }
 
                 // Interact with individual winners view.

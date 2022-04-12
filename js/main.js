@@ -133,11 +133,12 @@ innovativeMapIndividualWinnersDispatcher.on('highlightWinners', highlightedCity 
 
 // Highlight city of highlighted winner.
 innovativeMapIndividualWinnersDispatcher.on('highlightCity', highlightedWinners => {
-
 })
 
-// Show winners in of selected cities.
+// Show winners of selected cities.
 innovativeMapIndividualWinnersDispatcher.on('filterCities', selectedCities => {
+    console.log('Selected cities: ', selectedCities)
+
 
 })
 

@@ -30,14 +30,14 @@ class WinnersSmallMultiples {
             .attr('id', 'individual-winners-view')
             .attr('width', vis.config.containerWidth)
             .attr('height', vis.config.containerHeight)
-            .attr('transform', `translate(450, -800)`)
+            .attr('transform', `translate(${vis.config.containerWidth / 2}, -25)`)
 
         // Title
         vis.svg.append('text')
             .attr('class', 'individual-winners title')
-            .attr('x', vis.viewWidth / 2 - 45)
+            .attr('x', vis.viewWidth / 2 - 115)
             .attr('y', vis.config.margin.top - 15)
-            .text('Individual Winners')
+            .text('Gender of Individual Winners in US')
 
         // Create view area.
         vis.view = vis.svg.append('g')
@@ -113,7 +113,7 @@ class WinnersSmallMultiples {
                     .attr('r', 4)
                     .attr('fill', d => d.gender === 'male' ? 'blue' : 'pink')
                     .on('mouseover', function (event, d) {
-                        // Highlight all winners born in same city.
+                        // Highlight all winners born in same city (also want to highlight city later).
                         let highlightedWinners = []
                         for (let i = 0; i < vis.winnersByCity.length; i++) {
                             // console.log('Data: ', vis.winnersByCity[i])
@@ -147,7 +147,7 @@ class WinnersSmallMultiples {
                         //     .style('stroke', 'black')
                         //     .style('stroke-width', 1)
 
-                        vis.dispatcher.call('highlightCity', event, highlightedWinners)
+                        // vis.dispatcher.call('highlightCity', event, highlightedWinners)
                     })
                     .on('mouseleave', function (event, d) {
                         d3.select('#individual-winners-tooltip')
@@ -165,12 +165,12 @@ class WinnersSmallMultiples {
 
                         let selectedWinners = []
 
-                        vis.dispatcher.call('filterWinners', event, selectedWinners)
+                        // vis.dispatcher.call('filterWinners', event, selectedWinners)
                     })
             })
 
         // Highlight winners based on selected city.
-        vis.view.selectAll('.select-city winners')
+        row.selectAll('.select-city winners')
             .data(vis.highlightedCityData)
             .join('circle')
             .attr('class', 'select-city winners')

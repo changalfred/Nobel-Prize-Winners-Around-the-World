@@ -136,6 +136,7 @@ class NobelPrizeWorldMap {
                         </div>`);
 
                     d3.select(this)
+                        .style('stroke', 'red')
                         .style('stroke-width', 1.5)
                         .style('opacity', 1);
                 }
@@ -150,7 +151,8 @@ class NobelPrizeWorldMap {
                 // Ensure cursor leaving active country does not change stroke width.
                 if (!d3.select(this).classed('active')) {
                     d3.select(this)
-                        .style('stroke-width', 0.5);
+                        .style('stroke-width', 0.5)
+                        .style('stroke', 'black')
                 }
             })
             .on('click', function (event, d) {
@@ -159,9 +161,11 @@ class NobelPrizeWorldMap {
                 // Deactivate all previously selected countries.
                 d3.selectAll('.country').classed('active', false)
                     .style('stroke-width', 0.5)
+                    .style('stroke', 'black')
 
                 d3.select(this).classed('active', !isActive)
                     .style('stroke-width', 1.5)
+                    .style('stroke', 'red')
 
                 const selectedCountry = d.properties.name
 
