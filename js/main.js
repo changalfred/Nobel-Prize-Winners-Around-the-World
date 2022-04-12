@@ -17,26 +17,12 @@ Promise.all([
     d3.csv('data/laureates.csv'),
     d3.csv('data/us-cities.csv')
 ]).then(data => {
+    // Parse data
     geoData = data[0]
     nobelPrizeData = data[1]
     usCitiesData = data[2]
 
-    // nobelPrizeData = d3.filter(nobelPrizeData, d => d.birth_countryNow === 'USA')
-    // // Check how many matching cities.
-    // let matchCount = 0
-    // let matchingCities = new Set()
-    // for (let i = 0; i < nobelPrizeData.length; i++) {
-    //     let nobelItem = nobelPrizeData[i]
-    //     for (let j = 0; j < usCitiesData.length; j++) {
-    //         let cityItem = usCitiesData[j]
-    //         if (cityItem.city === nobelItem.birth_cityNow.substring(0, nobelItem.birth_cityNow.indexOf(','))) {
-    //             matchingCities.add(cityItem.city)
-    //             matchCount++    // 223, but only 94 unique matching cities.
-    //         }
-    //     }
-    // }
-
-    // Format columns to numerical or date for easier use.
+    // Format columns to numerical or date format
     nobelPrizeData.forEach(d => {
         d.awardYear = +d.awardYear
         d.prizeAmountAdjusted = +d.prizeAmountAdjusted
@@ -51,13 +37,13 @@ Promise.all([
         d.lon = +d.lon
     })
 
-    // Manipulate data.
     convertField(nobelPrizeData, 'USA', 'United States of America')
     filterMapData(geoData, 'Antarctica')
     let rolledData = rollupData(nobelPrizeData)
     let minMaxData = minMax(groupData(nobelPrizeData))
     commonData = joinData(geoData, rolledData, minMaxData)
 
+    // Initialize views
     worldMap = new NobelPrizeWorldMap({
         parentElement: '#vis-container-map',
         containerWidth: 1000,
@@ -91,13 +77,11 @@ Promise.all([
     }, nobelPrizeData);
     barChart.updateVis();
 
+    // Add interactivity to button
     d3.select(".btn")
         .on('click', () => {
             worldMap.data = nobelPrizeData;
             worldMap.updateVis();
-
-            // densityMap.data = nobelPrizeData;
-            // densityMap.updateVis();
 
             barChart.data = nobelPrizeData;
             barChart.updateVis();
