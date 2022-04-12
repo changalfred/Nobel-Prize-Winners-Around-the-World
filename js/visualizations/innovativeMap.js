@@ -57,16 +57,12 @@ class InnovativeMap {
         vis.bounds = vis.geoPath.bounds(vis.countryFeatures[0])
 
         // Combine data from us-cities.csv and laureates.csv.
-        // vis.winnersWithLatLon = []
         vis.validCities = []
         for (let i = 0; i < vis.usNobelPrizeData[1][1].length; i++) {
             let nobelItem = vis.usNobelPrizeData[1][1][i]
             for (let j = 0; j < vis.usCitiesData.length; j++) {
                 let cityItem = vis.usCitiesData[j]
                 if (cityItem.city === nobelItem.birth_cityNow.substring(0, nobelItem.birth_cityNow.indexOf(','))) {
-                    // nobelItem.lat = cityItem.lat
-                    // nobelItem.lon = cityItem.lon
-                    // vis.winnersWithLatLon.push(nobelItem)
                     vis.validCities.push(cityItem)
                 }
             }
