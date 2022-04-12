@@ -16,13 +16,11 @@ class Treemap {
     initVis() {
         let vis = this;
 
-        // console.log('Tree data: ', vis.data)
-
         vis.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right;
         vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom;
 
         vis.colorScale = d3.scaleLinear().domain([0, 30])
-            .range(["white", "green"])
+            .range(["white", "darkgreen"])
 
         // Define size of SVG drawing area
         vis.svg = d3.select(vis.config.parentElement)
@@ -43,8 +41,6 @@ class Treemap {
         let awardsPerAffiliationTopTen = awardsPerAffiliation.slice(0, 10);
         awardsPerAffiliationTopTen.push({ university: 'origin', parent: '', awardCount: '' });
 
-        // console.log(awardsPerAffiliation);
-
         // data processing:
         vis.data = d3.stratify()
             .id((d) => { return d.university; })
@@ -63,8 +59,6 @@ class Treemap {
             (vis.data);
 
         vis.renderVis();
-
-        // console.log(vis.data.leaves());
     }
 
     renderVis() {
@@ -123,7 +117,7 @@ class Treemap {
             .style("stroke", "black")
             .style("fill", d => vis.colorScale(d.data.awardCount));
 
-        const labels = vis.chart.selectAll('text')
+        vis.chart.selectAll('text')
             .data(vis.data.leaves())
             .join('text')
             .attr('data-width', (d) => d.x1 - d.x0)
