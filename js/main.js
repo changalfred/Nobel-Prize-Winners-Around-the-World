@@ -67,6 +67,7 @@ Promise.all([
 
     const innovativeMap = new InnovativeMap({
         parentElement: '#vis-container-innovative-map',
+        dropdownMenu: '#dropdown-menu',
         containerWidth: 1000,
         containerHeight: 800
     }, commonData, nobelPrizeData, usCitiesData, innovativeMapIndividualWinnersDispatcher)
@@ -88,7 +89,7 @@ Promise.all([
 
     barChart = new BarChart({
         parentElement: '#vis-prize-per-category',
-    }, nobelPrizeData);
+    }, nobelPrizeData, worldMapBarChartDispatcher);
     barChart.updateVis();
 
     d3.select(".btn")
@@ -96,17 +97,13 @@ Promise.all([
             worldMap.data = nobelPrizeData;
             worldMap.updateVis();
 
-            // densityMap.data = nobelPrizeData;
-            // densityMap.updateVis();
-
             barChart.data = nobelPrizeData;
             barChart.updateVis();
 
             treeMap.data = nobelPrizeData;
             treeMap.updateVis();
         });
-}, nobelPrizeData, worldMapBarChartDispatcher);
-barChart.updateVis();
+});
 
 // Show average prize money of each category of winners in selected country.
 worldMapBarChartDispatcher.on('filterCountry', selectedCountry => {
