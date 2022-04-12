@@ -128,7 +128,7 @@ class BarChart {
                     .style('stroke', 'none')
             }
 
-            vis.dispatcher.call('filterPrizeCategories', event, selectedCategories)
+            vis.dispatcher.call('filterCategories', event, selectedCategories)
         })
 
         // Update the axes because the underlying scales might have changed

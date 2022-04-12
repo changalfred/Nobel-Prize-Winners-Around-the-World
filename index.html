@@ -19,36 +19,42 @@
     <div class="flexbox-container">
         <!-- Geographical Map Goes Here -->
         <div class="flexbox-item flexbox-item-1">
-            <h2>Distribution of Winners By Country</h2>
+            <h2 style="text-align: center">Distribution of Winners By Country</h2>
             <div class="vis" id="vis-container-map"></div>
             <div id="map-legend"></div>
             <div id="map-tooltip"></div>
-        </div>
-
-        <!-- Dot Density Map Goes Here -->
-        <div class="flexbox-item flexbox-item-2">
-            <h2>Winners In (Country)</h2>
-            <div class="vis" id="vis-container-dot-density-map"></div>
-            <div id="map-gender-legend"></div>
-            <div id="map-dd-tooltip"></div>
         </div>
     </div>
 
     <div class="flexbox-container">
         <!-- Treemap Goes Here -->
         <div class="flexbox-item flexbox-item-3">
-            <h2>Universities with Most Nobel Prize Laureates</h2>
+            <h2 style="text-align: center">Universities with Most Nobel Prize Laureates</h2>
             <div><svg id="treemap"></svg></div>
             <div id="treemapTooltip"></div>
         </div>
 
         <!-- Barchart Goes Here -->
         <div class="flexbox-item flexbox-item-4">
-            <h2>Variation in Prize Amount Per Category</h2>
+            <h2 style="text-align: center">Variation in Prize Amount Per Category</h2>
             <div id="vis-prize-per-category"></div>
         </div>
     </div>
 
+    <div class="flexbox-container">
+        <!-- US Map Goes Here -->
+        <div class="flexbox-item flexbox-item-2">
+            <h2 style="text-align: center">Distribution of Winners In Major US Cities</h2>
+            <div class="vis" id="vis-container-innovative-map"></div>
+            <div id="map-gender-legend"></div>
+            <div id="inno-city-tooltip"></div>
+            <!-- Individual Winners Here (Small Multiples) -->
+            <div class="winners small-multiples">
+                <div class="vis" id="vis-container-individual-winners"></div>
+                <div id="individual-winners-tooltip"></div>
+            </div>
+        </div>
+    </div>
 
     <!-- Bootstrap-->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -61,7 +67,8 @@
 
     <!-- Visualizations -->
     <script src="js/visualizations/worldMap.js"></script>
-    <script src="js/visualizations/dotDensityMap.js"></script>
+    <script src="js/visualizations/innovativeMap.js"></script>
+    <script src="js/visualizations/winnersSmallMultiples.js"></script>
     <script src="js/visualizations/treemap.js"></script>
     <script src="js/visualizations/barChart.js"></script>
 

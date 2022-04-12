@@ -4,54 +4,70 @@
     box-shadow: 3px 3px 3px 0px rgb(92 92 92 / 0.5);
 }
 
-.title {
-  text-align: center;
-  align-items: center;
-  justify-content: center;
+#vis-container-individual-winners svg {
+    border: 2px solid black;
+}
+
+.individual-winners {
+    font-weight: bold;
+    font-size: large;
+}
+
+#individual-winners-tooltip {
+    position: absolute;
+    font-size: 12px;
+    box-shadow: 3px 3px 3px 0px rgb(92 92 92 / 0.5);
+}
+
+#inno-city-tooltip {
+  position: absolute;
+  font-size: 12px;
+  box-shadow: 3px 3px 3px 0px rgb(92 92 92 / 0.5);
 }
 
 .flexbox-container {
-  display: flex;
-  align-items: center;
-  align-content: center;
+    display: flex;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
 }
 
 .flexbox-item {
-  margin: 30px;
-  border: 3px solid black;
-  background-color: none;
+    margin: 30px;
+    border: 3px solid black;
+    background-color: none;
 }
 
 .flexbox-item1 {
-  width: 100vw;
-  min-height: 300px;
+    width: 100vw;
+    min-height: 300px;
 }
 
 .flexbox-item2 {
-  width: 50%;
-  min-height: 300px;
+    width: 50%;
+    min-height: 300px;
 }
 
 .flexbox-item3 {
-  width: 50%;
-  min-height: 300px;
+    width: 50%;
+    min-height: 300px;
 }
 
 #treemapTooltip {
-  position: absolute;
-  display: none;
-  background: #fff;
-  box-shadow: 3px 3px 3px 0px rgb(92 92 92 / 0.5);
-  border: 1px solid #ddd;
-  font-size: 12px;
-  font-weight: 500;
-  padding: 8px;
-  min-width: 160px;
-  color: #333;
+    position: absolute;
+    display: none;
+    background: #fff;
+    box-shadow: 3px 3px 3px 0px rgb(92 92 92 / 0.5);
+    border: 1px solid #ddd;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 8px;
+    min-width: 160px;
+    color: #333;
 }
 
 .treemapTooltip-title {
-  color: #000;
-  font-size: 14px;
-  font-weight: 600;
+    color: #000;
+    font-size: 14px;
+    font-weight: 600;
 }
