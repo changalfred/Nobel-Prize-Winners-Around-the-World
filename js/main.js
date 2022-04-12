@@ -74,7 +74,7 @@ Promise.all([
 
     barChart = new BarChart({
         parentElement: '#vis-prize-per-category',
-    }, nobelPrizeData);
+    }, nobelPrizeData, worldMapBarChartDispatcher);
     barChart.updateVis();
 
     // Add interactivity to button
@@ -82,6 +82,12 @@ Promise.all([
         .on('click', () => {
             worldMap.data = nobelPrizeData;
             worldMap.updateVis();
+
+            innovativeMap.data = nobelPrizeData;
+            innovativeMap.updateVis();
+
+            individualWinnersView.data = nobelPrizeData;
+            individualWinnersView.updateVis()
 
             barChart.data = nobelPrizeData;
             barChart.updateVis();
@@ -93,7 +99,8 @@ Promise.all([
 
 // Show average prize money of each category of winners in selected country.
 worldMapBarChartDispatcher.on('filterCountry', selectedCountry => {
-    if (selectedCountry === null) {
+    console.log(selectedCountry)
+    if (selectedCountry.length === 0) {
         barChart.data = nobelPrizeData
     } else {
         // Filter data to only include data with selected country.

@@ -20,7 +20,7 @@ class Treemap {
         vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom;
 
         vis.colorScale = d3.scaleLinear().domain([0, 30])
-            .range(["white", "green"])
+            .range(["white", "darkgreen"])
 
         // Define size of SVG drawing area
         vis.svg = d3.select(vis.config.parentElement)
@@ -60,7 +60,6 @@ class Treemap {
             (vis.data);
 
         vis.renderVis();
-
     }
 
     renderVis() {
@@ -119,7 +118,7 @@ class Treemap {
             .style("stroke", "black")
             .style("fill", d => vis.colorScale(d.data.awardCount));
 
-        const labels = vis.chart.selectAll('text')
+        vis.chart.selectAll('text')
             .data(vis.data.leaves())
             .join('text')
             .attr('data-width', (d) => d.x1 - d.x0)

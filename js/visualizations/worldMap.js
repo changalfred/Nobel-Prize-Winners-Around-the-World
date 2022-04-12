@@ -167,7 +167,7 @@ class NobelPrizeWorldMap {
                     .style('stroke-width', 1.5)
                     .style('stroke', 'red')
 
-                const selectedCountry = d.properties.name
+                const selectedCountry = vis.map.selectAll('.country.active').data().map(d => d.properties.name)
 
                 vis.dispatcher.call('filterCountry', event, selectedCountry)
             })
