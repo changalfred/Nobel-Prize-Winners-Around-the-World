@@ -4,7 +4,7 @@ class WinnersSmallMultiples {
             parentElement: _config.parentElement,
             containerWidth: _config.containerWidth,
             containerHeight: _config.containerHeight,
-            margin: {top: 35, right: 10, bottom: 10, left: 35},
+            margin: { top: 35, right: 10, bottom: 10, left: 35 },
             tooltipPadding: 10,
             legendMarginTop: 375,
             legendMarginLeft: 35,
@@ -61,18 +61,18 @@ class WinnersSmallMultiples {
 
         // Create 2D array: rows of winners where number of winners per row is as equal as possible.
         vis.matrixWinnersData = []
-        // Make 2D array with 9 rows.
+            // Make 2D array with 9 rows.
         for (let i = 0; i < 9; i++) {
             vis.matrixWinnersData[i] = []
         }
 
-        let count = 0   // Track item count in US winners data.
-        // Insert item into each row.
+        let count = 0 // Track item count in US winners data.
+            // Insert item into each row.
         for (let i = 0; i < 9; i++) {
             let matrix = vis.matrixWinnersData[i]
-            // 25 items per row.
+                // 25 items per row.
             for (let j = 0; j < 25; j++) {
-                if (count === 223) {    // US winners data has 223 items.
+                if (count === 223) { // US winners data has 223 items.
                     break
                 }
                 matrix.push(vis.usNobelPrizeData[count])
@@ -90,33 +90,30 @@ class WinnersSmallMultiples {
     renderVis() {
         let vis = this
 
-        console.log('Highlight city: ', vis.highlightedCityData)
-
         let row = vis.view.selectAll('.row')
             .data(vis.matrixWinnersData)
             .join('g')
             .attr('class', '.row')
             .attr('x', 0)
             .attr('y', (d, i) => i * 10)
-            .each(function (d, i) {
+            .each(function(d, i) {
                 d3.select(this)
                     .selectAll('.row')
                     .data(d)
                     .join('circle')
                     .attr('class', d => `mark winner ${d.birth_cityNow}`)
-                    .attr('cx', function (d, j) {
+                    .attr('cx', function(d, j) {
                         return j * 15
                     })
-                    .attr('cy', function () {
+                    .attr('cy', function() {
                         return i * 12
                     })
                     .attr('r', 4)
                     .attr('fill', d => d.gender === 'male' ? 'blue' : 'pink')
-                    .on('mouseover', function (event, d) {
+                    .on('mouseover', function(event, d) {
                         // Highlight all winners born in same city (also want to highlight city later).
                         let highlightedWinners = []
                         for (let i = 0; i < vis.winnersByCity.length; i++) {
-                            // console.log('Data: ', vis.winnersByCity[i])
                             if (vis.winnersByCity[i][0] === d.birth_cityNow) {
                                 highlightedWinners.push(vis.winnersByCity[i])
                             }
@@ -149,7 +146,7 @@ class WinnersSmallMultiples {
 
                         // vis.dispatcher.call('highlightCity', event, highlightedWinners)
                     })
-                    .on('mouseleave', function (event, d) {
+                    .on('mouseleave', function(event, d) {
                         d3.select('#individual-winners-tooltip')
                             .style('display', 'none');
 
@@ -160,7 +157,7 @@ class WinnersSmallMultiples {
                             .style('stroke', 'none')
                             .style('stroke-width', 0)
                     })
-                    .on('click', function (event, d) {
+                    .on('click', function(event, d) {
 
 
                         let selectedWinners = []

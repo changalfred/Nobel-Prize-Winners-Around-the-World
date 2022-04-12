@@ -105,14 +105,14 @@ class BarChart {
             .attr('height', vis.yScale.bandwidth())
             .attr('fill', d => vis.colourScale(d[0]));
 
-        bars.on('mouseover', function (event, d) {
+        bars.on('mouseover', function(event, d) {
             let colourFill = darkenFill(d[0])
 
             d3.select(this)
                 .style('fill', colourFill)
         })
 
-        bars.on('mouseleave', function (event, d) {
+        bars.on('mouseleave', function(event, d) {
             const category = d[0]
 
             let colourFill = resetFill(category)
@@ -123,7 +123,7 @@ class BarChart {
             }
         })
 
-        bars.on('click', function (event, d) {
+        bars.on('click', function(event, d) {
             const isActive = d3.select(this).classed('active')
             d3.select(this).classed('active', !isActive)
 
