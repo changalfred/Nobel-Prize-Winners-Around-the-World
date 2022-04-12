@@ -4,7 +4,7 @@ class BarChart {
             parentElement: _config.parentElement,
             containerWidth: 650,
             containerHeight: 350,
-            margin: { top: 15, right: 15, bottom: 70, left: 120 }
+            margin: {top: 15, right: 15, bottom: 70, left: 120}
         }
         this.data = _data;
         this.dispatcher = _dispatcher
@@ -19,15 +19,23 @@ class BarChart {
         vis.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right;
         vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom;
 
+        vis.categoryColours = ["#4e79a7", "#f28e2c", "#e15759", "#76b7b2", "#59a14f", "#edc949"]
+        vis.prizeCategories = ["Peace", "Physics", "Economic Sciences", "Physiology or Medicine",
+            "Chemistry", "Literature"]
+
         // Define Scales
         vis.xScale = d3.scaleLinear()
             .domain([0, d3.max(vis.data, d => d.prizeAmount)])
             .range([0, vis.width - 50]);
 
         vis.yScale = d3.scaleBand()
-            .domain(["Peace", "Physics", "Economic Sciences", "Physiology or Medicine", "Chemistry", "Literature"])
+            .domain(vis.prizeCategories)
             .range([0, vis.height])
             .paddingInner(0.15);
+
+        vis.colourScale = d3.scaleOrdinal()
+            .range(vis.categoryColours)
+            .domain(vis.prizeCategories)
 
         // Initialize axes
         vis.xAxis = d3.axisBottom(vis.xScale)
@@ -95,7 +103,7 @@ class BarChart {
             .attr('y', d => vis.yScale(vis.yValue(d)))
             .attr('width', d => vis.xScale(vis.xValue(d)))
             .attr('height', vis.yScale.bandwidth())
-            .attr('fill', (d, i) => d3.schemeTableau10[i]);
+            .attr('fill', d => vis.colourScale(d[0]));
 
         bars.on('mouseover', function (event, d) {
             let colourFill = darkenFill(d[0])
