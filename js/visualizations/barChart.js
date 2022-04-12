@@ -2,8 +2,8 @@ class BarChart {
     constructor(_config, _data, _dispatcher) {
         this.config = {
             parentElement: _config.parentElement,
-            containerWidth: 650,
-            containerHeight: 350,
+            containerWidth: 350,
+            containerHeight: 500,
             margin: { top: 15, right: 15, bottom: 70, left: 120 }
         }
         this.data = _data;
@@ -20,23 +20,23 @@ class BarChart {
         vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom;
 
         // Define Scales
-        vis.xScale = d3.scaleLinear()
+        vis.yScale = d3.scaleLinear()
             .domain([0, d3.max(vis.data, d => d.prizeAmount)])
-            .range([0, vis.width]);
+            .range([vis.height, 0]);
 
-        vis.yScale = d3.scaleBand()
+        vis.xScale = d3.scaleBand()
             .domain(["Peace", "Physics", "Economic Sciences", "Physiology or Medicine", "Chemistry", "Literature"])
-            .range([0, vis.height])
+            .range([0, vis.width])
             .paddingInner(0.15);
 
         // Initialize axes
         vis.xAxis = d3.axisBottom(vis.xScale)
             .tickSizeOuter(0)
-            .tickFormat(d3.format("$,d"));
 
         vis.yAxis = d3.axisLeft(vis.yScale)
             .ticks(5)
-            .tickSizeOuter(0);
+            .tickSizeOuter(0)
+            .tickFormat(d3.format("$,d"));
 
         // Define size of SVG drawing area
         vis.svg = d3.select(vis.config.parentElement).append('svg')
@@ -46,14 +46,19 @@ class BarChart {
         // Append group element that will contain our actual chart 
         // and position it according to the given margin config
         vis.chartArea = vis.svg.append('g')
-            .attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top})`)
+            .attr('transform', `translate(${vis.config.margin.left - 20}, ${-vis.config.margin.bottom / 3})`)
             .attr('class', 'chart-area');
 
         vis.chart = vis.chartArea.append('g');
 
         vis.xAxisG = vis.chartArea.append('g')
-            .attr('class', 'axis x-axis')
-            .attr('transform', `translate(0, ${vis.height})`);
+            .attr('class', 'axis x-axis');
+
+        vis.xAxisG.attr('transform', `translate(0, ${vis.height})`)
+            .call(vis.xAxis)
+            .selectAll('text')
+            .style('text-anchor', 'end')
+            .attr('transform', `rotate(-45)`)
 
         // Append y-axis group 
         vis.yAxisG = vis.chartArea.append('g')
@@ -63,8 +68,8 @@ class BarChart {
         vis.svg.append("text")
             .attr("id", "total-prize-label")
             .attr("text-anchor", "middle")
-            .attr("x", vis.config.containerWidth / 2 + 25)
-            .attr("y", vis.config.containerHeight - 20)
+            .attr("x", vis.config.containerHeight - 20)
+            .attr("y", vis.config.containerWidth / 2 + 25)
             .text("Total Prize Money (USD)");
 
         vis.updateVis(vis.data);
@@ -75,10 +80,10 @@ class BarChart {
 
 
         vis.prizeAmountPerCategory = d3.rollup(vis.data, v => d3.mean(v, d => d.prizeAmountAdjusted), d => d.category);
-        vis.xScale.domain([0, d3.max(vis.prizeAmountPerCategory.values()) + 1e6]);
+        vis.yScale.domain([0, d3.max(vis.prizeAmountPerCategory.values()) + 1e6]);
 
-        vis.xValue = d => d[1];
-        vis.yValue = d => d[0];
+        vis.xValue = d => d[0];
+        vis.yValue = d => d[1];
 
         vis.renderVis();
     }
@@ -88,13 +93,17 @@ class BarChart {
         let vis = this;
 
         let bars = vis.chart.selectAll('.bar')
-            .data(vis.prizeAmountPerCategory, d => vis.yValue(d))
+            .data(vis.prizeAmountPerCategory, d => vis.xValue(d))
             .join('rect')
             .attr('class', 'bar')
-            .attr('x', 0)
-            .attr('y', d => vis.yScale(vis.yValue(d)))
-            .attr('width', d => vis.xScale(vis.xValue(d)))
-            .attr('height', vis.yScale.bandwidth())
+            .attr('x', d => vis.xScale(vis.xValue(d)))
+            .attr('y', d => vis.height - vis.yScale(vis.yValue(d)))
+            .attr('width', vis.xScale.bandwidth())
+            // .attr('height', d => vis.yScale(vis.yValue(d)))
+            .attr('height', function (d) {
+                console.log('Y scale Y value: ', vis.yScale(vis.yValue(d)))
+                return vis.yScale(vis.yValue(d))
+            })
             .attr('fill', (d, i) => d3.schemeTableau10[i]);
 
         bars.on('mouseover', function (event, d) {
