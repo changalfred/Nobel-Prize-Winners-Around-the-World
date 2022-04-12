@@ -105,8 +105,7 @@ Promise.all([
             treeMap.data = nobelPrizeData;
             treeMap.updateVis();
         });
-}, nobelPrizeData, worldMapBarChartDispatcher);
-barChart.updateVis();
+});
 
 // Show average prize money of each category of winners in selected country.
 worldMapBarChartDispatcher.on('filterCountry', selectedCountry => {
