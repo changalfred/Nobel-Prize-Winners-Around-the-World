@@ -1,5 +1,13 @@
 const parseDate = d3.timeParse('%Y-%m-%d')
 
+let worldMap, treeMap, barChart
+let geoData, commonData, nobelPrizeData
+
+// filteredCategories: select a category on bar chart to filter countries that have
+// winners belonging to category (can have multiple categories).
+// filteredCountry: select a country to show prize winnings of each category in that country
+// (only one country can be selected at any point).
+const worldMapBarChartDispatcher = d3.dispatch('filterPrizeCategories', 'filterCountry')
 const treemapDispatcher = d3.dispatch('treemapFilter');
 
 // Main function.
@@ -7,8 +15,8 @@ Promise.all([
     d3.json('data/countries-110m.json'),
     d3.csv('data/laureates.csv')
 ]).then(data => {
-    const geoData = data[0]
-    const nobelPrizeData = data[1]
+    geoData = data[0]
+    nobelPrizeData = data[1]
 
     // Format columns to numerical or date for easier use.
     nobelPrizeData.forEach(d => {
@@ -22,18 +30,18 @@ Promise.all([
 
     // Manipulate data.
     convertField(nobelPrizeData, 'USA', 'United States of America')
-    filterData(geoData, 'Antarctica')
+    filterMapData(geoData, 'Antarctica')
     let rolledData = rollupData(nobelPrizeData)
     let minMaxData = minMax(groupData(nobelPrizeData))
-    let commonData = joinData(geoData, rolledData, minMaxData)
+    commonData = joinData(geoData, rolledData, minMaxData)
 
 
-    const prizeWorldMap = new NobelPrizeWorldMap({
+    worldMap = new NobelPrizeWorldMap({
         parentElement: '#vis-container-map',
         containerWidth: 1000,
         containerHeight: 500
-    }, commonData, nobelPrizeData)
-    prizeWorldMap.updateVis()
+    }, commonData, nobelPrizeData, worldMapBarChartDispatcher)
+    worldMap.updateVis()
 
     const densityMap = new DotDensityMap({
         parentElement: '#vis-container-dot-density-map',
@@ -42,14 +50,14 @@ Promise.all([
     }, commonData, nobelPrizeData)
     densityMap.updateVis()
 
-    const treemap = new Treemap({
+    treeMap = new Treemap({
         parentElement: '#treemap',
         containerWidth: 500,
         containerHeight: 500
     }, treemapDispatcher, nobelPrizeData);
-    treemap.updateVis();
+    treeMap.updateVis();
 
-    const bar_chart = new BarChart({
+    barChart = new BarChart({
         parentElement: '#vis-prize-per-category',
     }, nobelPrizeData);
     bar_chart.updateVis();
@@ -68,4 +76,40 @@ Promise.all([
             treemap.data = nobelPrizeData;
             treemap.updateVis();
         });
+    }, nobelPrizeData, worldMapBarChartDispatcher);
+    barChart.updateVis();
+})
+
+// Show average prize money of each category of winners in selected country.
+worldMapBarChartDispatcher.on('filterCountry', selectedCountry => {
+    if (selectedCountry === null) {
+        barChart.data = nobelPrizeData
+    } else {
+        // Filter data to only include data with selected country.
+        barChart.data = filterCsvData(nobelPrizeData, selectedCountry)
+    }
+    
+    barChart.updateVis()
+})
+
+// Show countries with winners in selected categories.
+worldMapBarChartDispatcher.on('filterPrizeCategories', selectedPrizeCategories => {
+    if (selectedPrizeCategories.length === 0) {
+        console.log('Categories: ', selectedPrizeCategories)
+        console.log('Common data without categories: ', commonData)
+
+        let rolledData = rollupData(nobelPrizeData)
+        let minMaxData = minMax(groupData(nobelPrizeData))
+        commonData = joinData(geoData, rolledData, minMaxData)
+        worldMap.commonData = commonData
+    } else {
+        let nobelPrizeDataWithSpecificCategories = filterCsvDataWithKeys(nobelPrizeData, selectedPrizeCategories)
+        console.log('Categories: ', selectedPrizeCategories)
+        console.log('Common data with categories: ', commonData)
+        let rolledData = rollupData(nobelPrizeDataWithSpecificCategories)
+        let minMaxData = minMax(groupData(nobelPrizeDataWithSpecificCategories))
+        worldMap.commonData = joinData(geoData, rolledData, minMaxData)
+    }
+
+    worldMap.updateVis()
 })

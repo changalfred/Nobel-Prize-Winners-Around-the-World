@@ -1,4 +1,4 @@
- class DotDensityMap {
+class DotDensityMap {
     constructor(_config, _commonData, _nobelPrizeData) {
         this.config = {
             parentElement: _config.parentElement,
@@ -8,8 +8,7 @@
             tooltipPadding: 10,
             legendMarginTop: 375,
             legendMarginLeft: 35,
-            legendWidth: 150,
-            legendHeight: 20
+            legendRadius: 8
         }
 
         this.commonData = _commonData
@@ -32,7 +31,7 @@
         vis.svg.append('text')
             .attr('x', vis.config.containerWidth / 4)
             .attr('y', 20)
-            .text('Winners in [Country Name]')
+        // .text('Winners in [Country Name]')
 
         vis.ddMap = vis.svg.append('g')
             .attr('transform', `translate(${vis.config.margin.left}, ${vis.config.margin.top})`)
@@ -60,7 +59,7 @@
 
         // Convert TopoJson -> GeoJson.
         const country = topojson.feature(vis.commonData, vis.commonData.objects.countries)
-        country.features = country.features.filter(d => d.properties.name === 'Russia')    // Replace 'Canada' with selected country.
+        country.features = country.features.filter(d => d.properties.name === 'Madagascar')    // Replace 'Canada' with selected country.
         // console.log(country.features[0])
 
         let bounds = vis.geoPath.bounds(country.features)
@@ -89,6 +88,26 @@
     renderLegend() {
         let vis = this
 
+        const keys = ['male', 'female']
 
+        let legendBins = vis.ddMap.selectAll('.legend-bin')
+            .data(keys)
+
+        legendBins.join('circle')
+            .attr('class', d => `legend-mark gender-${d}`)
+            .attr('cx', 20)
+            .attr('cy', (d, i) => i * 25)
+            .attr('r', vis.config.legendRadius)
+            .attr('fill', d => d === 'male' ? 'blue' : 'pink')
+
+        legendBins.join('text')
+            .attr('class', d => `legend-label gender-${d}`)
+            .attr('x', 35)
+            .attr('y', (d, i) => i * 25 + 4)
+            .text(d => d)
+
+        legendBins.on('hover', function () {
+
+        })
     }
 }

@@ -72,14 +72,30 @@ function minMax(csvData) {
     return minMax
 }
 
-function filterData(mapData, key) {
-    let mapItems = mapData.objects.countries.geometries
+function filterMapData(data, key) {
+    let mapItems = data.objects.countries.geometries
 
     for (let i = 0; i < mapItems.length; i++) {
         if (mapItems[i].properties.name === key) {
             mapItems.splice(i, 1)
         }
     }
+}
+
+function filterCsvData(data, key) {
+    return data.filter(d => d.birth_countryNow === key)
+}
+
+function filterCsvDataWithKeys(data, keys) {
+    let newData = data
+
+    newData = newData.filter(function (d) {
+        let doesInclude = keys.includes(d.category)
+        console.log('Includes?: ', keys, d.category, doesInclude)
+        return doesInclude
+    })
+
+    return newData
 }
 
 // Join data here.
