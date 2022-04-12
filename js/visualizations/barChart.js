@@ -17,11 +17,10 @@ class BarChart {
 
         // Calculate inner chart size. Margin specifies the space around the actual chart.
         vis.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right;
-        vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom;
+        vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom - 75;
 
         // Define Scales
         vis.yScale = d3.scaleLinear()
-            .domain([0, d3.max(vis.data, d => d.prizeAmount)])
             .range([vis.height, 0]);
 
         vis.xScale = d3.scaleBand()
@@ -46,7 +45,7 @@ class BarChart {
         // Append group element that will contain our actual chart 
         // and position it according to the given margin config
         vis.chartArea = vis.svg.append('g')
-            .attr('transform', `translate(${vis.config.margin.left - 20}, ${-vis.config.margin.bottom / 3})`)
+            .attr('transform', `translate(${vis.config.margin.left - 20}, ${-vis.config.margin.bottom / 3 + 80})`)
             .attr('class', 'chart-area');
 
         vis.chart = vis.chartArea.append('g');
@@ -68,19 +67,19 @@ class BarChart {
         vis.svg.append("text")
             .attr("id", "total-prize-label")
             .attr("text-anchor", "middle")
-            .attr("x", vis.config.containerHeight - 20)
-            .attr("y", vis.config.containerWidth / 2 + 25)
-            .text("Total Prize Money (USD)");
+            .attr("x", 80)
+            .attr("y", vis.config.margin.top + 20)
+            .text("Total Prize (USD)");
 
-        vis.updateVis(vis.data);
+        vis.updateVis();
     }
 
     updateVis() {
         let vis = this;
 
-
         vis.prizeAmountPerCategory = d3.rollup(vis.data, v => d3.mean(v, d => d.prizeAmountAdjusted), d => d.category);
-        vis.yScale.domain([0, d3.max(vis.prizeAmountPerCategory.values()) + 1e6]);
+        console.log('Prize amount per category: ', vis.prizeAmountPerCategory)
+        vis.yScale.domain([0, 10000000]);
 
         vis.xValue = d => d[0];
         vis.yValue = d => d[1];
@@ -92,7 +91,7 @@ class BarChart {
         // Bind data to visual elements, update axes
         let vis = this;
 
-        let bars = vis.chart.selectAll('.bar')
+        let bars = vis.chartArea.selectAll('.bar')
             .data(vis.prizeAmountPerCategory, d => vis.xValue(d))
             .join('rect')
             .attr('class', 'bar')
@@ -101,7 +100,7 @@ class BarChart {
             .attr('width', vis.xScale.bandwidth())
             // .attr('height', d => vis.yScale(vis.yValue(d)))
             .attr('height', function (d) {
-                console.log('Y scale Y value: ', vis.yScale(vis.yValue(d)))
+                console.log('Y scale: ', vis.yScale(vis.yValue(d)), ' Y value: ', vis.yValue(d))
                 return vis.yScale(vis.yValue(d))
             })
             .attr('fill', (d, i) => d3.schemeTableau10[i]);
@@ -128,7 +127,7 @@ class BarChart {
             const isActive = d3.select(this).classed('active')
             d3.select(this).classed('active', !isActive)
 
-            const selectedCategories = vis.chart.selectAll('.bar.active').data().map(d => d[0])
+            const selectedCategories = vis.chartArea.selectAll('.bar.active').data().map(d => d[0])
             d3.select(this).style('stroke', 'black').style('stroke-width', 2).style('fill', darkenFill(d[0]))
 
             if (!d3.select(this).classed('active')) {

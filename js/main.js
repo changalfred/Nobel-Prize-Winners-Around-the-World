@@ -96,8 +96,11 @@ Promise.all([
             worldMap.data = nobelPrizeData;
             worldMap.updateVis();
 
-            // densityMap.data = nobelPrizeData;
-            // densityMap.updateVis();
+            innovativeMap.data = nobelPrizeData;
+            innovativeMap.updateVis();
+
+            individualWinnersView.data = nobelPrizeData;
+            individualWinnersView.updateVis()
 
             barChart.data = nobelPrizeData;
             barChart.updateVis();
