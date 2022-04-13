@@ -114,13 +114,14 @@ function filterCsvData(data, key) {
 }
 
 function filterCsvDataWithKeys(data, keys) {
-    let newData = data
+    let newData = data;
 
-    newData = newData.filter(function (d) {
-        return keys.includes(d.category)
+    newData = newData.filter(function(d) {
+        let doesInclude = keys.includes(d.category);
+        return doesInclude;
     })
 
-    return newData
+    return newData;
 }
 
 // Join data here.
