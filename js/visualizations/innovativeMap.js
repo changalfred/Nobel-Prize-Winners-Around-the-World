@@ -5,7 +5,7 @@ class InnovativeMap {
             dropdownMenu: _config.dropdownMenu,
             containerWidth: _config.containerWidth,
             containerHeight: _config.containerHeight,
-            margin: {top: 35, right: 10, bottom: 10, left: 35},
+            margin: { top: 35, right: 10, bottom: 10, left: 35 },
             tooltipPadding: 10,
             legendMarginTop: 375,
             legendMarginLeft: 35,
@@ -71,11 +71,10 @@ class InnovativeMap {
                 }
             }
         }
-        console.log(vis.validCities)
 
         // Data for dropdown menu; only want unique items so use set.
         vis.dropdownItems = new Set(vis.validCities.map(d => d.city))
-
+      
         vis.renderVis()
     }
 
@@ -101,7 +100,7 @@ class InnovativeMap {
             .attr('stroke', 'black')
             .attr('stroke-width', 1)
             .attr('fill', 'white')
-            .on('mouseover', function (event, d) {
+            .on('mouseover', function(event, d) {
                 let highlightedCity = d.city
                 d3.selectAll('.city')
                     .style('opacity', 0.5);

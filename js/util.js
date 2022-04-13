@@ -96,12 +96,10 @@ function filterWinnersByUsaData(data, key) {
 
     // Group data by city.
     let cityWinnersData = []
-    let groupByCity = d3.groups(usWinnersData, function (d) {
+    let groupByCity = d3.groups(usWinnersData, function(d) {
         let winners = d[1]
-        // console.log('Winners: ', winners)
         for (let i = 0; i < winners.length; i++) {
             let city = winners[i].birth_cityNow.substring(0, winners[i].birth_cityNow.indexOf(','))
-            // console.log('City: ', city, ' Key: ', key)
             if (city === key) {
                 return cityWinnersData.push(city, winners[i])
             }
@@ -112,19 +110,18 @@ function filterWinnersByUsaData(data, key) {
 }
 
 function filterCsvData(data, key) {
-    return data.filter(d => d.birth_countryNow === key)
+    return data.filter(d => d.birth_countryNow === key[0])
 }
 
 function filterCsvDataWithKeys(data, keys) {
-    let newData = data
+    let newData = data;
 
-    newData = newData.filter(function (d) {
-        let doesInclude = keys.includes(d.category)
-        console.log('Includes?: ', keys, d.category, doesInclude)
-        return doesInclude
+    newData = newData.filter(function(d) {
+        let doesInclude = keys.includes(d.category);
+        return doesInclude;
     })
 
-    return newData
+    return newData;
 }
 
 // Join data here.
@@ -146,7 +143,6 @@ function joinData(topoMap, csvData, minMaxWinnersPerCountryData) {
             let winnerPerCountryItemElement = winnerPerCountryItem[j]
             let winnerKey = winnerPerCountryItemElement[0]
             let winnerValue = winnerPerCountryItemElement[1]
-            // console.log('Winner value: ', winnerPerCountryItemElement)
 
             // Keys and values for total prize money per country.
             let prizeTotalPerCountryItemElement = prizeTotalPerCountryItem[j]
