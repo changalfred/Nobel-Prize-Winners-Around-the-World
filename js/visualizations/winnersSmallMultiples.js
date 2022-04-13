@@ -44,7 +44,7 @@ class WinnersSmallMultiples {
             .attr('transform', `translate(${vis.config.margin.left / 2 + 5}, ${vis.config.margin.top + 10})`)
             .attr('border', '2px solid black')
 
-        // // Attach g for legend.
+        // Attach g for legend.
         vis.legendGroup = vis.svg.append('g')
             .attr('width', 100)
             .attr('height', 75)
@@ -61,16 +61,19 @@ class WinnersSmallMultiples {
 
         // Create 2D array: rows of winners where number of winners per row is as equal as possible.
         vis.matrixWinnersData = []
-            // Make 2D array with 9 rows.
+
+        // Make 2D array with 9 rows.
         for (let i = 0; i < 9; i++) {
             vis.matrixWinnersData[i] = []
         }
 
         let count = 0 // Track item count in US winners data.
-            // Insert item into each row.
+
+        // Insert item into each row.
         for (let i = 0; i < 9; i++) {
             let matrix = vis.matrixWinnersData[i]
-                // 25 items per row.
+
+            // 25 items per row.
             for (let j = 0; j < 25; j++) {
                 if (count === 223) { // US winners data has 223 items.
                     break
@@ -136,15 +139,6 @@ class WinnersSmallMultiples {
                             .style('r', 5)
                             .style('stroke', 'black')
                             .style('stroke-width', 1)
-
-                        // TODO: Uncomment and show.
-                        // d3.selectAll(`.winner-${d.birth_cityNow}`)
-                        //     .style('fill', 'gold')
-                        //     .style('r', 5)
-                        //     .style('stroke', 'black')
-                        //     .style('stroke-width', 1)
-
-                        // vis.dispatcher.call('highlightCity', event, highlightedWinners)
                     })
                     .on('mouseleave', function(event, d) {
                         d3.select('#individual-winners-tooltip')
@@ -156,13 +150,6 @@ class WinnersSmallMultiples {
                             .style('r', 4)
                             .style('stroke', 'none')
                             .style('stroke-width', 0)
-                    })
-                    .on('click', function(event, d) {
-
-
-                        let selectedWinners = []
-
-                        // vis.dispatcher.call('filterWinners', event, selectedWinners)
                     })
             })
 
