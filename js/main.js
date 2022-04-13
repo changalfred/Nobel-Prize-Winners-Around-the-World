@@ -4,8 +4,8 @@ let worldMap, treeMap, barChart, individualWinnersView
 let geoData, commonData, nobelPrizeData, usCitiesData, usData
 
 // filteredCategories: select at least one category on bar chart to filter countries that have
-// winners belonging to category
-// filteredCountry: select a country to show prize winnings of each category in that country
+// winners belonging to category.
+// filteredCountry: select a country to show prize winnings of each category in that country.
 const worldMapBarChartDispatcher = d3.dispatch('filterCategories', 'filterCountry')
 const innovativeMapIndividualWinnersDispatcher = d3.dispatch('highlightCity', 'highlightWinners',
     'filterCities', 'filterWinners')
@@ -133,19 +133,4 @@ innovativeMapIndividualWinnersDispatcher.on('highlightWinners', highlightedCity 
     individualWinnersView.highlightedCityData = usData
 
     individualWinnersView.updateVis()
-})
-
-// Highlight city of highlighted winner.
-innovativeMapIndividualWinnersDispatcher.on('highlightCity', highlightedWinners => {
-
-})
-
-// Show winners of selected cities.
-innovativeMapIndividualWinnersDispatcher.on('filterCities', selectedCities => {
-
-})
-
-// Show city of selected winner.
-innovativeMapIndividualWinnersDispatcher.on('filterWinners', selectedWinners => {
-
 })

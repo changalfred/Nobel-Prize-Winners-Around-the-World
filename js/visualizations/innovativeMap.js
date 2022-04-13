@@ -91,7 +91,7 @@ class InnovativeMap {
             .attr('stroke-width', 1)
 
         // Plot the cities as points.
-        let cityPlots = vis.cityMap.selectAll('.city')
+        vis.cityMap.selectAll('.city')
             .data(vis.validCities)
             .join('circle')
             .attr('class', 'city ')

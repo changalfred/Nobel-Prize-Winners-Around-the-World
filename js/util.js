@@ -6,7 +6,6 @@ function convertField(csvData, from, to) {
     }
 }
 
-// Roll up data here.
 function rollupData(csvData) {
     let data = []
 
@@ -21,7 +20,6 @@ function rollupData(csvData) {
     return data
 }
 
-// Group data here.
 function groupData(csvData) {
     return d3.groups(csvData, d => d.birth_countryNow)
 }
@@ -96,7 +94,7 @@ function filterWinnersByUsaData(data, key) {
 
     // Group data by city.
     let cityWinnersData = []
-    let groupByCity = d3.groups(usWinnersData, function(d) {
+    d3.groups(usWinnersData, function (d) {
         let winners = d[1]
         for (let i = 0; i < winners.length; i++) {
             let city = winners[i].birth_cityNow.substring(0, winners[i].birth_cityNow.indexOf(','))
@@ -116,9 +114,8 @@ function filterCsvData(data, key) {
 function filterCsvDataWithKeys(data, keys) {
     let newData = data;
 
-    newData = newData.filter(function(d) {
-        let doesInclude = keys.includes(d.category);
-        return doesInclude;
+    newData = newData.filter(function (d) {
+        return keys.includes(d.category);
     })
 
     return newData;

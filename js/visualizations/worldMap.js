@@ -13,7 +13,6 @@ class NobelPrizeWorldMap {
         }
 
         this.commonData = _commonData;
-        this.nobelPrizeData = _nobelPrizeData;
         this.dispatcher = _dispatcher
         this.initVis();
     };
@@ -44,11 +43,13 @@ class NobelPrizeWorldMap {
 
         // Annotation.
         vis.annotations = [{
-            note: { label: 'USA has the most laureates at 272.',
-                    textSize: 12,
-                    wrap: 135 },
+            note: {
+                label: 'USA has the most laureates at 272.',
+                textSize: 12,
+                wrap: 135
+            },
             className: 'anomaly',
-            connector: { end: 'dot' },
+            connector: {end: 'dot'},
             color: ['#cc0000'],
             x: 277,
             y: 170,
@@ -141,7 +142,7 @@ class NobelPrizeWorldMap {
                         .style('opacity', 1);
                 }
             })
-            .on('mouseleave', function (event, d) {
+            .on('mouseleave', function () {
                 d3.selectAll('.country')
                     .style('opacity', 1);
 
@@ -155,7 +156,7 @@ class NobelPrizeWorldMap {
                         .style('stroke', 'black')
                 }
             })
-            .on('click', function (event, d) {
+            .on('click', function (event) {
                 const isActive = d3.select(this).classed('active')
 
                 // Deactivate all previously selected countries.
