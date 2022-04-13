@@ -53,6 +53,7 @@ Promise.all([
 
     const innovativeMap = new InnovativeMap({
         parentElement: '#vis-container-innovative-map',
+        dropdownMenu: '#dropdown-menu',
         containerWidth: 1000,
         containerHeight: 800
     }, commonData, nobelPrizeData, usCitiesData, innovativeMapIndividualWinnersDispatcher)
