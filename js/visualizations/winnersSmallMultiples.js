@@ -99,7 +99,10 @@ class WinnersSmallMultiples {
                     .selectAll('.row')
                     .data(d)
                     .join('circle')
-                    .attr('class', d => `mark winner ${d.birth_cityNow}`)
+                    .attr('class', function (d) {
+                        let cityAndState = d.birth_cityNow.split(',')
+                        return cityAndState[0] + cityAndState[1]
+                    })
                     .attr('cx', function (d, j) {
                         return j * 15
                     })
@@ -109,14 +112,6 @@ class WinnersSmallMultiples {
                     .attr('r', 4)
                     .attr('fill', d => d.gender === 'male' ? 'blue' : 'pink')
                     .on('mouseover', function (event, d) {
-                        // Highlight all winners born in same city (also want to highlight city later).
-                        let highlightedWinners = []
-                        for (let i = 0; i < vis.winnersByCity.length; i++) {
-                            if (vis.winnersByCity[i][0] === d.birth_cityNow) {
-                                highlightedWinners.push(vis.winnersByCity[i])
-                            }
-                        }
-
                         // Tooltip for highlighted winner.
                         d3.select('#individual-winners-tooltip')
                             .style('display', 'block')
@@ -128,8 +123,16 @@ class WinnersSmallMultiples {
                             .style('top', (event.pageY + vis.config.tooltipPadding) + 'px')
                             .html(`<div><b>${d.fullName}</b></div>`)
 
-                        let className = d3.select(this)._groups[0]
-                        d3.selectAll(className)
+                        let cityName = d3.select(this)._groups[0][0].__data__.birth_cityNow
+
+                        // Applies to winners born in city with no other winners.
+                        d3.select(this)
+                            .style('fill', 'gold')
+                            .style('r', 5)
+                            .style('stroke', 'black')
+                            .style('stroke-width', 1)
+
+                        d3.selectAll(`.${cityName}`)
                             .style('fill', 'gold')
                             .style('r', 5)
                             .style('stroke', 'black')
@@ -139,8 +142,16 @@ class WinnersSmallMultiples {
                         d3.select('#individual-winners-tooltip')
                             .style('display', 'none');
 
-                        let className = d3.select(this)._groups[0]
-                        d3.selectAll(className)
+                        let cityName = d3.select(this)._groups[0][0].__data__.birth_cityNow
+
+                        // Applies to winners of cities with no other winners.
+                        d3.select(this)
+                            .style('fill', d => d.gender === 'male' ? 'blue' : 'pink')
+                            .style('r', 4)
+                            .style('stroke', 'none')
+                            .style('stroke-width', 0)
+
+                        d3.selectAll(`.${cityName}`)
                             .style('fill', d => d.gender === 'male' ? 'blue' : 'pink')
                             .style('r', 4)
                             .style('stroke', 'none')
@@ -179,4 +190,17 @@ class WinnersSmallMultiples {
             .attr('y', (d, i) => i * 25 + 4)
             .text(d => d)
     }
+}
+
+// Helper function.
+function findDiff(str1, str2) {
+    console.log('S1: ', str1, ' S2: ', str2)
+    let diff = ""
+    str2.split('').forEach(function (val, i) {
+        if (val !== str1.charAt(i)) {
+            diff += val
+        }
+    })
+
+    return diff
 }
