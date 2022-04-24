@@ -109,14 +109,6 @@ class WinnersSmallMultiples {
                     .attr('r', 4)
                     .attr('fill', d => d.gender === 'male' ? 'blue' : 'pink')
                     .on('mouseover', function (event, d) {
-                        // Highlight all winners born in same city (also want to highlight city later).
-                        let highlightedWinners = []
-                        for (let i = 0; i < vis.winnersByCity.length; i++) {
-                            if (vis.winnersByCity[i][0] === d.birth_cityNow) {
-                                highlightedWinners.push(vis.winnersByCity[i])
-                            }
-                        }
-
                         // Tooltip for highlighted winner.
                         d3.select('#individual-winners-tooltip')
                             .style('display', 'block')
