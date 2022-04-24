@@ -191,6 +191,10 @@ class InnovativeMap {
                     .style('stroke', 'black')
                     .style('stroke-width', 1)
                     .style('fill', 'white')
+                    .remove()
+
+                d3.selectAll('.city')
+                    .style('opacity', 1)
             })
     }
 }

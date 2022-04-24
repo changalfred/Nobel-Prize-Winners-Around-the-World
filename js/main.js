@@ -1,6 +1,6 @@
 const parseDate = d3.timeParse('%Y-%m-%d')
 
-let worldMap, treeMap, barChart, individualWinnersView
+let worldMap, innovativeMap, treeMap, barChart, individualWinnersView
 let geoData, commonData, nobelPrizeData, usCitiesData, usData
 
 // filteredCategories: select at least one category on bar chart to filter countries that have
@@ -51,7 +51,7 @@ Promise.all([
     }, commonData, nobelPrizeData, worldMapBarChartDispatcher)
     worldMap.updateVis()
 
-    const innovativeMap = new InnovativeMap({
+    innovativeMap = new InnovativeMap({
         parentElement: '#vis-container-innovative-map',
         dropdownMenu: '#dropdown-menu',
         containerWidth: 1000,
@@ -133,4 +133,19 @@ innovativeMapIndividualWinnersDispatcher.on('highlightWinners', highlightedCity 
     individualWinnersView.highlightedCityData = usData
 
     individualWinnersView.updateVis()
+})
+
+// Highlight city of highlighted winner.
+innovativeMapIndividualWinnersDispatcher.on('highlightCity', highlightedWinners => {
+
+})
+
+// Show winners of selected cities.
+innovativeMapIndividualWinnersDispatcher.on('filterCities', selectedCities => {
+
+})
+
+// Show city of selected winner.
+innovativeMapIndividualWinnersDispatcher.on('filterWinners', selectedWinners => {
+
 })
